@@ -1,4 +1,5 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
+from services.UserService import UserService
 
 user_bp = Blueprint('user_bp', __name__)
 
@@ -11,4 +12,8 @@ class UserForm:
 
 @user_bp.route('/users', methods=['GET'])
 def api_get_users():
-    return "make function to get user here"
+    users = UserService.get_all_users()
+    return jsonify({
+        'status': 200,
+        'data': users
+    }) if users else ('', 404)
