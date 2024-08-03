@@ -1,11 +1,10 @@
 from . import db
-from flask_login import UserMixin
 
-class Seller(UserMixin, db.Model):
+class Seller(db.Model):
     __tablename__ = 'sellers'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     store_name = db.Column(db.String(80))
-    store_location = db.Column(db.ForeignKey('locations'))
+    store_location = db.Column(db.ForeignKey('locations.id'))
     store_type = db.Column(db.String(2), default='0')
     store_info = db.Column(db.String(1000))
     description = db.Column(db.Text)
