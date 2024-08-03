@@ -1,7 +1,6 @@
 from . import db
 from flask_login import UserMixin
 import bcrypt
-from sqlalchemy import ForeignKey
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -12,7 +11,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(80), nullable=False)
     consumer_data =db.Column(db.Text)
     isSeller = db.Column(db.String(2), default='0')
-    seller_id = db.Column(db.Integer, ForeignKey("seller"))
+    seller_id = db.Column(db.ForeignKey("sellers"))
     status = db.Column(db.String(2), default='1')
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
