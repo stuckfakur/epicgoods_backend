@@ -11,7 +11,7 @@ class LocationForm:
         self.description = data.get('description')
 
 
-@location_bp.route('/seller', methods=['GET'])
+@location_bp.route('/location', methods=['GET'])
 def api_get_location():
     location = LocationService.get_all_location()
     return jsonify({
@@ -19,7 +19,7 @@ def api_get_location():
         'data': location
     }) if location else ('', 404)
 
-@location_bp.route('/seller', methods=['POST'])
+@location_bp.route('/location', methods=['POST'])
 def api_create_location():
     form = LocationForm()
     location = LocationService.create_location(
