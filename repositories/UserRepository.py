@@ -1,17 +1,17 @@
 from models.User import User, db
 
 class UserRepository:
-    
+
     @staticmethod
     def get_all_users():
         return User.query.all()
     
     @staticmethod
-    def get_user_by_id(id):
+    def get_users_by_id(id):
         return User.query.get(id)
 
     @staticmethod
-    def create_user(
+    def create_users(
         name,
         username,
         email,
@@ -30,7 +30,7 @@ class UserRepository:
        return new_user
 
     @staticmethod
-    def update_user(id, data):
+    def update_users(id, data):
         user = User.query.get(id)
         if user:
             for key, value in data.items():
@@ -39,7 +39,7 @@ class UserRepository:
         return user
 
     @staticmethod
-    def delete_user(id):
+    def delete_users(id):
         user = User.query.get(id)
         if user:
             db.session.delete(user)

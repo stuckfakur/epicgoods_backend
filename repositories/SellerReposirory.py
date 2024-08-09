@@ -24,3 +24,20 @@ class SellerRepository:
        db.session.add(new_seller)
        db.session.commit()
        return new_seller
+    @staticmethod
+    def update_seller(id, data):
+        seller = Seller.query.get(id)
+        if seller:
+            for key, value in data.items():
+                setattr(seller, key, value)
+            db.session.commit()
+        return seller
+    @staticmethod
+    def delete_seller(id):
+        seller = Seller.query.get(id)
+        if seller:
+            db.session.delete(seller)
+            db.session.commit()
+        return seller
+
+
