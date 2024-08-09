@@ -12,7 +12,7 @@ class SellerForm:
         self.description = data.get('description')
 
 
-@seller_bp.route('/seller', methods=['GET'])
+@seller_bp.route('/sellers', methods=['GET'])
 def api_get_users():
     seller = SellerService.get_all_seller()
     return jsonify({
@@ -20,7 +20,7 @@ def api_get_users():
         'data': seller
     }) if seller else ('', 404)
 
-@seller_bp.route('/seller', methods=['POST'])
+@seller_bp.route('/sellers', methods=['POST'])
 def api_create_users():
     form = SellerForm()
     seller = SellerService.create_seller(
