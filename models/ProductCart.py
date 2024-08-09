@@ -6,6 +6,7 @@ class ProductCart(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.ForeignKey('users.id'))
     product_id = db.Column(db.ForeignKey('products.id'))
+    stock = db.Column(db.Integer)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 

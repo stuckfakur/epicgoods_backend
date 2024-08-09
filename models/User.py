@@ -11,7 +11,6 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(80), nullable=False)
     consumer_data =db.Column(db.Text)
     isSeller = db.Column(db.String(2), default='0')
-    seller_id = db.Column(db.ForeignKey('sellers.id'))
     status = db.Column(db.String(2), default='1')
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
@@ -25,7 +24,6 @@ class User(UserMixin, db.Model):
             'password' : self.password,
             'consumer_data' : self.consumer_data,
             'isSaller' : self.isSeller,
-            'seller_id' : self.seller_id,
             'status' : self.status,
             'created_at' : self.created_at,
             'updated_at' : self.updated_at
