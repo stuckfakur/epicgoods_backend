@@ -1,15 +1,20 @@
 from repositories.UserRepository import UserRepository
 
 class UserService:
+
     @staticmethod
     def get_all_users():
         users = UserRepository.get_all_users()
         return [user.to_dict() for user in users]
     
     @staticmethod
-    def get_user_by_id(id):
-        return UserRepository.get_user_by_id(id)
-
+    def get_users_by_id(id):
+        user = UserRepository.get_users_by_id(id)
+        if user:
+            return user.to_dict()
+        else:
+            return "User not found"
+        
     @staticmethod
     def create_users(
         name,
@@ -18,7 +23,7 @@ class UserService:
         password,
         consumer_data
     ):
-        return UserRepository.create_user(
+        return UserRepository.create_users(
             name,
             username,
             email,
@@ -27,9 +32,14 @@ class UserService:
         )
 
     @staticmethod
-    def update_user(user_id, data):
-        return UserRepository.update_user(user_id, data)
+    def update_users(id, data):
+        user = UserRepository.get_users_by_id(id, data)
+        if user:
+            return user.to_dict()
+        else:
+            return None
+        
 
     @staticmethod
-    def delete_user(user_id):
-        return UserRepository.delete_user(user_id)
+    def delete_users(id):
+        return UserRepository.delete_users(id)
