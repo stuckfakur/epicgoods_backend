@@ -4,8 +4,8 @@ from flask_login import UserMixin
 class ProductWishlist(UserMixin, db.Model):
     __tablename__ = 'product_wistlist'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.ForeignKey('users'))
-    product_id = db.Column(db.ForeignKey('products'))
+    user_id = db.Column(db.ForeignKey('users.id'))
+    product_id = db.Column(db.ForeignKey('products.id'))
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 
@@ -19,4 +19,4 @@ class ProductWishlist(UserMixin, db.Model):
         }
     
     def __repr__(self) -> str:
-        return f"<ProductCart {self.id}>"
+        return f"<ProductWishlist {self.id}>"

@@ -4,8 +4,8 @@ from flask_login import UserMixin
 class Follower(UserMixin, db.Model):
     __tablename__ = 'followers'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.ForeignKey('users'))
-    followers_id = db.Column(db.ForeignKey('users'))
+    user_id = db.Column(db.ForeignKey('users.id'))
+    followers_id = db.Column(db.ForeignKey('users.id'))
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 

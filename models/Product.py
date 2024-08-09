@@ -4,7 +4,7 @@ from flask_login import UserMixin
 class Product(UserMixin, db.Model):
     __tablename__ = 'products'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    category_id = db.Column(db.ForeignKey('categories'))
+    category_id = db.Column(db.ForeignKey('categories.id'))
     product_slug = db.Column(db.String(80), unique=True)
     product_photo = db.Column(db.String(80))
     product_gellery = db.Column(db.Text)

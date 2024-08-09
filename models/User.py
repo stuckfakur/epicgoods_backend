@@ -11,7 +11,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(80), nullable=False)
     consumer_data =db.Column(db.Text)
     isSeller = db.Column(db.String(2), default='0')
-    seller_id = db.Column(db.ForeignKey("sellers.id"))
+    seller_id = db.Column(db.ForeignKey('sellers.id'))
     status = db.Column(db.String(2), default='1')
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
@@ -41,3 +41,8 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
+    
+class TokenBlacklist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jti = db.Column(db.String(36), nullable=False, unique=True)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
