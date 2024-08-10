@@ -1,0 +1,15 @@
+tags:
+  - User
+parameters:
+  - name: Authorization
+    in: header
+    required: true
+    schema:
+      type: string
+      description: JWT token to be included in the header with the format 'Bearer <token>'
+      example: "Bearer <token>"
+responses:
+  200:
+    description: Successfully retrieved user
+  404:
+    description: User not found

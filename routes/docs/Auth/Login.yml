@@ -1,0 +1,30 @@
+tags:
+  - Auth
+responses:
+  201:
+    description: User successfully logged in
+    content:
+      application/json:
+        example:
+          username: johndoe
+          password: password123
+  400:
+    description: Bad request
+parameters:
+  - name: Login
+    in: body
+    schema:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          description: The username of the user
+          example: johndoe
+        password:
+          type: string
+          description: The password of the user
+          example: password123
+

@@ -1,0 +1,47 @@
+tags:
+  - Auth
+responses:
+  201:
+    description: User successfully registered
+    content:
+      application/json:
+        example:
+          name: John Doe
+          username: johndoe
+          email: johndoe@example.com
+          password: password123
+          consumer_data: Bla bla bla
+  400:
+    description: Bad request
+parameters:
+  - name: Register
+    in: body
+    schema:
+      type: object
+      required:
+        - name
+        - username
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          description: The name of the user
+          example: John Doe
+        username:
+          type: string
+          description: The username of the user
+          example: johndoe
+        email:
+          type: string
+          description: The email of the user
+          example: johndoe@example.com
+        password:
+          type: string
+          description: The password of the user
+          example: password123
+        consumer_data:
+          type: string
+          description: The consumer data of the user
+          example: Bla bla bla
+

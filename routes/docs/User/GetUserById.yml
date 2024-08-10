@@ -1,0 +1,31 @@
+tags:
+  - User
+parameters:
+  - name: id
+    in: path
+    required: true
+    schema:
+      type: integer
+      description: ID of the user to retrieve
+      example: 1
+  - name: Authorization
+    in: header
+    required: true
+    schema:
+      type: string
+      description: JWT token to be included in the header with the format 'Bearer <token>'
+      example: "Bearer <token>"
+responses:
+  200:
+    description: Successfully retrieved user
+    content:
+      application/json:
+        example:
+          status: 200
+          data:
+            id: 1
+            name: John Doe
+            username: johndoe
+            email: johndoe@example.com
+  404:
+    description: User not found
