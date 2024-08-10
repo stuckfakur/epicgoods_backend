@@ -16,7 +16,6 @@ flask-jwt-extended = "*"
 bcrypt = "*"
 flask-migrate = "*"
 flask-cors = "*"
-flask-mail = "*"
 mailjet-rest = "*"
 
 [dev-packages]
