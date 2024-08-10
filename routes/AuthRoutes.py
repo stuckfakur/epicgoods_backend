@@ -4,6 +4,8 @@ from models.User import db
 from services.UserService import UserService
 from models.User import User, TokenBlacklist
 from utils.email_register import send_email
+from flasgger import swag_from
+import os
 
 auth_bp = Blueprint('auth_bp', __name__)
 class UserForm:
@@ -16,6 +18,7 @@ class UserForm:
         self.consumer_data = data.get('consumer_data')
 
 @auth_bp.route('/register', methods=['POST'])
+@swag_from(os.path.join(os.path.dirname(__file__), 'docs/Auth/Register.yml'))
 def api_register():
     try:
         user_form = UserForm()
@@ -40,6 +43,7 @@ def api_register():
         }}), 400
 
 @auth_bp.route('/login', methods=['POST'])
+@swag_from(os.path.join(os.path.dirname(__file__), 'docs/Auth/Login.yml'))
 def api_login():
     data = request.get_json()
 
@@ -99,6 +103,7 @@ def refresh():
 
 @auth_bp.route('/logout', methods=['POST'])
 @jwt_required()
+@swag_from(os.path.join(os.path.dirname(__file__), 'docs/Auth/Logout.yml'))
 def api_logout():
     jti = get_jwt()['jti']
     token = TokenBlacklist(jti=jti)
