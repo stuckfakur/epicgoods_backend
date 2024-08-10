@@ -6,7 +6,7 @@ class Product(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.ForeignKey('users.id'))
     category_id = db.Column(db.ForeignKey('categories.id'))
-    product_slug = db.Column(db.String(80), unique=True)
+    product_slug = db.Column(db.String(80), unique=True, nullable=False)
     product_photo = db.Column(db.String(80))
     product_gellery = db.Column(db.Text)
     product_name = db.Column(db.String(80))
@@ -19,12 +19,11 @@ class Product(UserMixin, db.Model):
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 
     category = db.relationship('Category', backref='products', lazy=True)
+    user = db.relationship('User', backref='products', lazy=True)
     
     def to_dict(self):
         return{
             'id' : self.id,
-            'user_id' : self.user_id,
-            'category_id': self.category_id,
             'product_slug' : self.product_slug,
             'product_photo' : self.product_photo,
             'product_gellery' : self.product_gellery,
@@ -39,6 +38,10 @@ class Product(UserMixin, db.Model):
                 'category_slug' : self.category.category_slug,
                 'category_name' : self.category.category_name,
                 'description' : self.category.description
+            },
+            'user' : {
+                'id' : self.user.id,
+                'name' : self.user.name
             },
             'created_at' : self.created_at,
             'updated_at' : self.updated_at
