@@ -12,6 +12,8 @@ class Seller(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 
+    location = db.relationship('Location', backref='sellers', lazy=True)
+
     def to_dict(self):
         return{
             'id' : self.id,
@@ -21,6 +23,11 @@ class Seller(db.Model):
             'store_type' : self.store_type,
             'store_info' : self.store_info,
             'description' : self.description,
+            'location' : {
+                'id' : self.location.id,
+                'location_name' : self.location.location_name,
+                'description' : self.location.description
+            },
             'created_at' : self.created_at,
             'updated_at' : self.updated_at
         }
