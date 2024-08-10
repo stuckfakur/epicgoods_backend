@@ -3,13 +3,25 @@ from utils.exception import NotFoundError
 
 class Validator:
     @staticmethod
-    def category_validator(name, description):
-        if not name or not isinstance(name, str):
-            raise ValueError("Name is required")
+    def category_validator(category_slug, category_name, description):
+        if not category_slug or not isinstance(category_slug, str):
+            raise ValueError("Category slug is required")
+        if not category_name or not isinstance(category_name, str):
+            raise ValueError("Category name is required")
         if not description or not isinstance(description, str):
             raise ValueError("Description is required")
 
 class CategoryService:
+    @staticmethod
+    def create_category(category_slug: object, category_name: object, description: object) -> object:
+        Validator.category_validator(category_slug, category_name, description)
+        category = CategoryRepository.create_category(
+            category_slug,
+            category_name,
+            description
+        )
+        return category
+
     @staticmethod
     def get_all_category(sort=None, order='asc'):
         category = CategoryRepository.get_all_category(sort, order)
@@ -21,25 +33,17 @@ class CategoryService:
         if not category:
             raise NotFoundError("Category not found")
         return category.to_dict()
-
-    @staticmethod
-    def create_category(category_name: object, description: object) -> object:
-        Validator.category_validator(category_name, description)
-        category = CategoryRepository.create_category(
-            category_name,
-            description
-        )
-        return category
     
     @staticmethod
-    def update_category(id: object, category_name: object, description: object) -> object:
-        Validator.category_validator(category_name, description)
+    def update_category(id: object, category_slug: object, category_name: object, description: object) -> object:
+        Validator.category_validator(category_slug, category_name, description)
         category = CategoryRepository.get_category_by_id(id)
         if not category:
             raise NotFoundError("Category not found")
         try:
             category = CategoryRepository.update_category(
                 id,
+                category_slug,
                 category_name,
                 description
             )
