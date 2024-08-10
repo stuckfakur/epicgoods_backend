@@ -3,6 +3,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 from models.User import db
 from services.UserService import UserService
 from models.User import User, TokenBlacklist
+from utils.email_register import send_email
 
 auth_bp = Blueprint('auth_bp', __name__)
 class UserForm:
@@ -25,6 +26,7 @@ def api_register():
             user_form.password,
             user_form.consumer_data
         )
+        send_email(user_form.email, user_form.name)
 
         return jsonify({
             'message': 'User created successfully',

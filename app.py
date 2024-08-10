@@ -3,7 +3,7 @@ from flask_migrate import Migrate
 from config import Config
 from models import db
 from flask import Flask
-from utils.check_db import connection_check
+from utils.check_db import connection_check , test_send_email
 from flask_jwt_extended import JWTManager
 
 from routes.UserRoute import user_bp
