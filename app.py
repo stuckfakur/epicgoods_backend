@@ -5,6 +5,7 @@ from models import db
 from flask import Flask
 from utils.check_db import connection_check
 from flask_jwt_extended import JWTManager
+from models.User import TokenBlacklist
 
 from routes.UserRoute import user_bp
 from routes.SellerRoute import seller_bp
@@ -44,7 +45,14 @@ CORS(
 
 @app.route('/')
 def index():
+
     return "Helo everybody, this is a Final Project"
+
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header, jwt_payload):
+    jti = jwt_payload['jti']
+    token = TokenBlacklist.query.filter_by(jti=jti).first()
+    return token is not None
 
 
 if __name__ == "__main__":
