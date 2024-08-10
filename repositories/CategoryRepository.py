@@ -1,7 +1,21 @@
 from models.Category import Category, db
 
 class CategoryRepository:
-    
+    @staticmethod
+    def create_category(
+        category_slug,
+        category_name,
+        description
+    ):
+       new_category = Category(
+           category_slug = category_slug,
+           category_name = category_name,
+           description = description
+       )
+       db.session.add(new_category)
+       db.session.commit()
+       return new_category
+
     @staticmethod
     def get_all_category(sort=None, order='asc'):
         query = Category.query
@@ -16,23 +30,11 @@ class CategoryRepository:
     @staticmethod
     def get_category_by_id(id):
         return Category.query.get(id)
-
-    @staticmethod
-    def create_category(
-        category_name,
-        description
-    ):
-       new_category = Category(
-           category_name = category_name,
-           description = description
-       )
-       db.session.add(new_category)
-       db.session.commit()
-       return new_category
     
     @staticmethod
     def update_category(
-            id,
+            id, 
+            category_slug,
             category_name,
             description,
     ):
@@ -42,6 +44,7 @@ class CategoryRepository:
                 return None
 
             data.category_name = category_name
+            data.category_slug = category_slug
             data.description = description
             data.updated_at = db.func.now()
 
