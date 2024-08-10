@@ -1,6 +1,7 @@
 from repositories.UserRepository import UserRepository
 from utils.exception import NotFoundError
 from flask_jwt_extended import get_jwt_identity
+import re
 
 class Validator:
     @staticmethod
@@ -15,8 +16,47 @@ class Validator:
             raise ValueError("Password is required")
         if not consumer_data or not isinstance(consumer_data, str):
             raise ValueError("Consumer data is required")
+        
+        regex_username = '^[a-zA-Z0-9]*$'
+        if not re.match(regex_username, username):
+            raise ValueError('only alpabeth and number is allowed in username')
+        regex_email = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"
+        if not re.match(regex_email, email):
+            raise ValueError('please input the valid email')
+        
+    @staticmethod
+    def user_existing_username(username):
+        if UserRepository.user_existing_username(username):
+            raise ValueError('username already exist')
+
+    @staticmethod
+    def user_existing_email(email):
+        if UserRepository.user_existing_email(email):
+            raise ValueError('email already exist')
 
 class UserService:
+    @staticmethod
+    def create_users(
+        name,
+        username,
+        email,
+        password,
+        consumer_data
+    ):
+        Validator.user_validator(name, username, email, password, consumer_data)
+        Validator.user_existing_email(email)
+        Validator.user_existing_username(username)
+        return UserRepository.create_users(
+            name,
+            username,
+            email,
+            password,
+            consumer_data
+        )
+
+    @staticmethod
+    def get_user_by_email(email):
+        return UserRepository.user_existing_email(email)
 
     @staticmethod
     def get_all_users():
@@ -30,22 +70,6 @@ class UserService:
             return user.to_dict()
         else:
             return "User not found"
-        
-    @staticmethod
-    def create_users(
-        name,
-        username,
-        email,
-        password,
-        consumer_data
-    ):
-        return UserRepository.create_users(
-            name,
-            username,
-            email,
-            password,
-            consumer_data
-        )
 
     @staticmethod
     def get_mydata_user():
@@ -58,8 +82,8 @@ class UserService:
         return data
 
     @staticmethod
-    def update_users(id, name, password):
-        Validator.user_validator(name, password)
+    def update_users(id, name, username, email, password, consumer_data):
+        Validator.user_validator(name, username, email, password, consumer_data)
         user = UserRepository.get_users_by_id(id)
         if user:
             return NotFoundError("User not found")
@@ -67,6 +91,10 @@ class UserService:
             user = UserRepository.update_users(
                 id,
                 name,
+                username,
+                email,
+                password,
+                consumer_data
             )
             return user
         except Exception as e:

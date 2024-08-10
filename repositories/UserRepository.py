@@ -32,28 +32,50 @@ class UserRepository:
     @staticmethod
     def get_mydata_users(id):
         return User.query.get(id)
+    
+    @staticmethod
+    def user_existing_email(email, user_id=None):
+        existing = User.query.filter_by(email=email)
+        if user_id:
+            existing = existing.filter(User.id != user_id)
+
+        existing = existing.first()
+        return True if existing else False
+    
+    @staticmethod
+    def user_existing_username(username, user_id=None):
+        existing = User.query.filter_by(username=username)
+        if user_id:
+            existing = existing.filter(User.id != user_id)
+
+        existing = existing.first()
+        return True if existing else False
 
     @staticmethod
-    def update_users(
-        id,
-        name,
-        password=None,
-    ):
+    def update_users(id, name, username, email=None, password=None, consumer_data=None):
         try:
             data = User.query.get(id)
             if not data:
                 return None
+
             data.name = name
+            data.username = username
+            data.consumer_data = consumer_data
             data.updated_at = db.func.now()
-         
-            data.set_password(password)
+
+            if email and email != data.email:
+                if UserRepository.check_email_exist(email, id):
+                    raise ValueError('email already exist')
+
+                data.email = email
+                data.set_password(password)
 
             db.session.commit()
 
             return data
         except Exception as e:
             db.session.rollback()
-            raise e
+            return e
 
     @staticmethod
     def update_users_status(id, status):
