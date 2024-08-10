@@ -6,6 +6,7 @@ from flask import Flask
 from utils.check_db import connection_check , test_send_email
 from flask_jwt_extended import JWTManager
 from models.User import TokenBlacklist
+from flasgger import Swagger
 
 from routes.UserRoute import user_bp
 from routes.SellerRoute import seller_bp
@@ -31,6 +32,7 @@ app.register_blueprint(product_bp, url_prefix='/api')
 app.register_blueprint(follower_bp, url_prefix='/api')
 app.register_blueprint(auth_bp, url_prefix='/api')
 
+swagger = Swagger(app)
 connection_check()
 
 CORS(
