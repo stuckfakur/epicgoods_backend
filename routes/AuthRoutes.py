@@ -24,10 +24,8 @@ def api_register():
         user_form = UserForm()
         user = UserService.create_users(
             user_form.name,
-            user_form.username,
             user_form.email,
             user_form.password,
-            user_form.consumer_data
         )
         send_email(user_form.email, user_form.name)
 
@@ -47,15 +45,15 @@ def api_register():
 def api_login():
     data = request.get_json()
 
-    if not data or 'username' not in data or 'password' not in data:
+    if not data or 'email' not in data or 'password' not in data:
         return jsonify({'error': {
-            'message': 'Username and password are required',
+            'message': 'Email and password are required',
         }}), 400
 
-    username = data['username']
+    email = data['email']
     password = data['password']
 
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter_by(email=email).first()
     if user and user.check_password(password):
         if user.status == '1':
             additional_claims = {
@@ -75,7 +73,7 @@ def api_login():
             }}), 400
     else:
         return jsonify({'error': {
-            'message': 'Invalid username or password'
+            'message': 'Invalid Email or password'
         }}), 401
 @auth_bp.route('/refresh', methods=['POST'])
 def refresh_option():
