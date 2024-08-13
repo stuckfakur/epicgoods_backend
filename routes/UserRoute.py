@@ -24,10 +24,8 @@ def api_create_users():
         user_form = UserForm()
         user = UserService.create_users(
             user_form.name,
-            user_form.username,
             user_form.email,
             user_form.password,
-            user_form.consumer_data
         )
 
         return jsonify({
