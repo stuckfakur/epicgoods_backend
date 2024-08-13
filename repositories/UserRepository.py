@@ -1,38 +1,43 @@
 from models.User import User, db
+import random
+
 
 class UserRepository:
 
     @staticmethod
     def create_users(
-        name,
-        username,
-        email,
-        password,
-        consumer_data
+            name,
+            email,
+            password,
     ):
-       new_user = User(
-           name = name,
-           username = username,
-           email = email,
-           consumer_data = consumer_data
-       )
-       new_user.set_password(password)
-       db.session.add(new_user)
-       db.session.commit()
-       return new_user
+        random_number = random.randint(1000, 9999)
+        username = f"{name.replace(' ', '_')}_{random_number}"
+        while User.query.filter_by(username=username).first():
+            random_number = random.randint(1000, 9999)
+            username = f"{name.replace(' ', '_')}_{random_number}"
+
+        new_user = User(
+            name=name,
+            username=username,
+            email=email,
+        )
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+        return new_user
 
     @staticmethod
     def get_all_users():
         return User.query.all()
-    
+
     @staticmethod
     def get_users_by_id(id):
         return User.query.get(id)
-    
+
     @staticmethod
     def get_mydata_users(id):
         return User.query.get(id)
-    
+
     @staticmethod
     def user_existing_email(email, user_id=None):
         existing = User.query.filter_by(email=email)
@@ -41,7 +46,7 @@ class UserRepository:
 
         existing = existing.first()
         return True if existing else False
-    
+
     @staticmethod
     def user_existing_username(username, user_id=None):
         existing = User.query.filter_by(username=username)
