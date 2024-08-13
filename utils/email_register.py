@@ -23,13 +23,12 @@ def send_email(recipient_email, recipient_name):
                         "Name": recipient_name
                     }
                 ],
-                "TemplateID": 12197550,
+                "TemplateID": 6208142,
                 "TemplateLanguage": True,
                 "Subject": "Successful Register on EpiGoods!",
-                "TextPart": "Thanks for registering!",
-                "HTMLPart": "<h3>Dear {recipient_name}, welcome to <a "
-                            "href=\"https://www.mailjet.com/\">Mailjet</a>!</h3><br />May the delivery force be with "
-                            "you!".format(recipient_name=recipient_name)
+                "Variables": {
+                    "name": recipient_name
+                }
             }
         ]
     }
