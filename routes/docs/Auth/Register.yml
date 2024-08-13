@@ -7,7 +7,6 @@ responses:
       application/json:
         example:
           name: John Doe
-          username: johndoe
           email: johndoe@example.com
           password: password123
           consumer_data: Bla bla bla
@@ -20,7 +19,6 @@ parameters:
       type: object
       required:
         - name
-        - username
         - email
         - password
       properties:
@@ -28,10 +26,6 @@ parameters:
           type: string
           description: The name of the user
           example: John Doe
-        username:
-          type: string
-          description: The username of the user
-          example: johndoe
         email:
           type: string
           description: The email of the user
