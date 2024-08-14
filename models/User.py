@@ -1,8 +1,6 @@
-import bcrypt
-from flask_login import UserMixin
-
 from . import db
-
+from flask_login import UserMixin
+import bcrypt
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -11,25 +9,27 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(80), nullable=False, unique=True)
     email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
-    consumer_data = db.Column(db.Text)
+    consumer_data =db.Column(db.Text)
     isSeller = db.Column(db.String(2), default='0')
     status = db.Column(db.String(2), default='1')
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
-
+    
     def to_dict(self):
-        return {
-            'id': self.id,
+        return{
+            'id' : self.id,
             'name': self.name,
-            'username': self.username,
-            'email': self.email,
-            'password': self.password,
-            'consumer_data': self.consumer_data,
-            'isSeller': self.isSeller,
-            'status': self.status,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
+            'username' : self.username,
+            'email' : self.email,
+            'password' : self.password,
+            'consumer_data' : self.consumer_data,
+            'isSaller' : self.isSeller,
+            'status' : self.status,
+            'created_at' : self.created_at,
+            'updated_at' : self.updated_at
         }
+    
+    
 
     def __repr__(self) -> str:
         return f"<User {self.name}>"
@@ -39,8 +39,7 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
-
-
+    
 class TokenBlacklist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(36), nullable=False, unique=True)

@@ -1,7 +1,6 @@
 from repositories.UserRepository import UserRepository
 from utils.exception import NotFoundError
 from flask_jwt_extended import get_jwt_identity
-from sqlalchemy.exc import DataError
 import re
 
 class Validator:
@@ -77,10 +76,10 @@ class UserService:
         return data
 
     @staticmethod
-    def update_users(id, name, username, email, password, status, consumer_data):
-        Validator.user_validator(name, email, password)
-        user = UserService.get_users_by_id(id)
-        if not user:
+    def update_users(id, name, username, email, password, consumer_data):
+        Validator.user_validator(name, username, email, password, consumer_data)
+        user = UserRepository.get_users_by_id(id)
+        if user:
             return NotFoundError("User not found")
         try:
             user = UserRepository.update_users(
@@ -89,14 +88,9 @@ class UserService:
                 username,
                 email,
                 password,
-                status,
                 consumer_data
             )
-            if user is None:
-                raise NotFoundError("User not found")
-            return user.to_dict()
-        except DataError as e:
-            raise ValueError(f"Database error occurred: {str(e)}")
+            return user
         except Exception as e:
             raise e
         

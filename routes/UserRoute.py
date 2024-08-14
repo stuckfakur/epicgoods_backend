@@ -87,7 +87,7 @@ def api_update_users(id):
         return jsonify({
             'message': 'User updated successfully',
             'status': 201,
-            'data': users_updated
+            'data': users_updated.to_dict()
         }), 200
     except ValueError as e:
         return jsonify({'error': {
