@@ -6,7 +6,7 @@ responses:
     content:
       application/json:
         example:
-          username: johndoe
+          email: johndoe@gmail.com
           password: password123
   400:
     description: Bad request
@@ -16,13 +16,13 @@ parameters:
     schema:
       type: object
       required:
-        - username
+        - email
         - password
       properties:
-        username:
+        email:
           type: string
-          description: The username of the user
-          example: johndoe
+          description: The email of the user
+          example: johndoe@gmail.com
         password:
           type: string
           description: The password of the user
