@@ -57,27 +57,28 @@ class UserRepository:
         return True if existing else False
 
     @staticmethod
-    def update_users(id, name, username, email=None, password=None, consumer_data=None):
+    def update_users(id, name, username, email,password, consumer_data, status, is_seller):
         try:
-            data = User.query.get(id)
-            if not data:
+            user = User.query.get(id)
+            if not user:
                 return None
+            
+            user.name = name
+            user.username = username
+            user.consumer_data = consumer_data
+            user.status = status
+            user.is_seller = is_seller
+            user.updated_at = db.func.now()
 
-            data.name = name
-            data.username = username
-            data.consumer_data = consumer_data
-            data.updated_at = db.func.now()
-
-            if email and email != data.email:
+            if email and email != user.email:
                 if UserRepository.check_email_exist(email, id):
                     raise ValueError('email already exist')
-
-                data.email = email
-                data.set_password(password)
+            if email:
+                user.email = email
 
             db.session.commit()
 
-            return data
+            return user
         except Exception as e:
             db.session.rollback()
             return e
@@ -90,6 +91,23 @@ class UserRepository:
                 return None
 
             user.status = status
+            user.updated_at = db.func.now()
+
+            db.session.commit()
+
+            return user
+        except Exception as e:
+            db.session.rollback()
+            return e
+
+    @staticmethod
+    def update_users_is_seller(id, is_seller):
+        try:
+            user = User.query.get(id)
+            if not user:
+                return None
+
+            user.is_seller = is_seller
             user.updated_at = db.func.now()
 
             db.session.commit()
