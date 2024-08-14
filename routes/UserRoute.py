@@ -16,7 +16,6 @@ class UserForm:
         self.status = data.get('status')
         self.password = data.get('password')
         self.consumer_data = data.get('consumer_data')
-        self.is_seller = data.get('is_seller')
 
 @user_bp.route('/api/users', methods=['POST'])
 @jwt_required()
@@ -84,12 +83,11 @@ def api_update_users(id):
             form.password,
             form.status,
             form.consumer_data,
-            form.is_seller
         )
         return jsonify({
             'message': 'User updated successfully',
             'status': 201,
-            'data': user.to_dict()
+            'data': user
         }), 200
     except ValueError as e:
         return jsonify({'error': {

@@ -1,4 +1,5 @@
 from models.User import User, db
+from sqlalchemy.exc import DataError
 import random
 
 
@@ -57,31 +58,37 @@ class UserRepository:
         return True if existing else False
 
     @staticmethod
-    def update_users(id, name, username, email,password, consumer_data, status, is_seller):
+    def update_users(id, name, username, email, password, status, consumer_data):
         try:
-            user = User.query.get(id)
-            if not user:
-                return None
-            
-            user.name = name
-            user.username = username
-            user.consumer_data = consumer_data
-            user.status = status
-            user.is_seller = is_seller
-            user.updated_at = db.func.now()
+            data = User.query.get(id)
+            if not data:
+                return None  # User not found
 
-            if email and email != user.email:
-                if UserRepository.check_email_exist(email, id):
-                    raise ValueError('email already exist')
-            if email:
-                user.email = email
+            # Update the user fields
+            data.name = name
+            data.username = username
+            data.status = status
+            data.consumer_data = consumer_data
+            data.updated_at = db.func.now()
+
+            if email and email != data.email:
+                if UserRepository.user_existing_email(email, id):
+                    raise ValueError('Email already exists')
+                data.email = email
+
+            if password:
+                data.set_password(password)
 
             db.session.commit()
 
-            return user
+            return data
+
+        except DataError as e:
+            db.session.rollback()
+            raise ValueError(f"Database error occurred: {str(e)}")
         except Exception as e:
             db.session.rollback()
-            return e
+            raise e
 
     @staticmethod
     def update_users_status(id, status):

@@ -1,35 +1,38 @@
 from repositories.UserRepository import UserRepository
 from utils.exception import NotFoundError
 from flask_jwt_extended import get_jwt_identity
+from sqlalchemy.exc import DataError
 import re
 
 class Validator:
     @staticmethod
-    def user_validator(id, name, username, email, password, status, consumer_data, is_seller):
-        if not id or not isinstance(id, int):
-            raise ValueError("Id is required")
+    def user_validator(name, email, password):
         if not name or not isinstance(name, str):
             raise ValueError("Name is required")
-        if not username or not isinstance(username, str):
-            raise ValueError("Username is required")
         if not email or not isinstance(email, str):
             raise ValueError("Email is required")
         if not password or not isinstance(password, str):
             raise ValueError("Password is required")
-        if not status or not isinstance(status, str):
-            raise ValueError("Status is required")  
-        if not consumer_data or not isinstance(consumer_data, str):
-            raise ValueError("Consumer data is required")
-        if not is_seller or not isinstance(is_seller, str):
-            raise ValueError("Is seller is required")
-        
-        regex_username = '^[a-zA-Z0-9]*$'
-        if not re.match(regex_username, username):
-            raise ValueError('only alpabeth and number is allowed in username')
+
+
+
         regex_email = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"
         if not re.match(regex_email, email):
             raise ValueError('please input the valid email')
-        
+
+    @staticmethod
+    def extra_validator(username, status, consumer_data):
+        if not username or not isinstance(username, str):
+            raise ValueError("Username is required")
+        if not status or not isinstance(status, str):
+            raise ValueError("Status is required")
+        if not consumer_data or not isinstance(consumer_data, str):
+            raise ValueError("Consumer data is required")
+
+        regex_username = '^[a-zA-Z0-9]*$'
+        if not re.match(regex_username, username):
+            raise ValueError('only alpabeth and number is allowed in username')
+
     @staticmethod
     def user_existing_username(username):
         if UserRepository.user_existing_username(username):
@@ -83,22 +86,27 @@ class UserService:
         return data
 
     @staticmethod
-    def update_users(id, name, username, email, password, status, consumer_data, is_seller):
-        Validator.user_validator(id, name, username, email, password, status, consumer_data, is_seller)
-        data = UserRepository.get_users_by_id(id)
-        if not data:
+    def update_users(userId, name, username, email, password, status, consumer_data):
+        Validator.user_validator(name, email, password)
+        Validator.extra_validator(username, status, consumer_data)
+        user = UserService.get_users_by_id(userId)
+        if not user:
             raise NotFoundError("User not found")
-        
-        UserRepository.update_users(
-            id,
-            name,
-            username,
-            email,
-            password,
-            status,
-            consumer_data,
-            is_seller
+        try:
+            user = UserRepository.update_users(
+                userId,
+                name,
+                username,
+                email,
+                password,
+                status,
+                consumer_data
             )
+            return user.to_dict()
+        except DataError as e:
+            raise ValueError(f"Database error occurred: {str(e)}")
+        except Exception as e:
+            raise e
         
     @staticmethod
     def update_users_status(id, status):
