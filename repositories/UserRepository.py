@@ -57,30 +57,36 @@ class UserRepository:
         return True if existing else False
 
     @staticmethod
-    def update_users(id, name, username, email=None, password=None, consumer_data=None):
+    def update_users(userId, name, username, email, password, status, consumer_data):
         try:
-            data = User.query.get(id)
+            data = User.query.get(userId)
             if not data:
                 return None
 
+            # Update the user fields
             data.name = name
             data.username = username
+            data.status = status
             data.consumer_data = consumer_data
             data.updated_at = db.func.now()
 
+            # Update email and password if provided and different
             if email and email != data.email:
-                if UserRepository.check_email_exist(email, id):
-                    raise ValueError('email already exist')
+                if UserRepository.user_existing_email(email, userId):
+                    raise ValueError('Email already exists')
 
                 data.email = email
+
+            if password:
                 data.set_password(password)
 
             db.session.commit()
 
             return data
+
         except Exception as e:
             db.session.rollback()
-            return e
+            raise e  # Re-raise the exception to be handled by the calling method
 
     @staticmethod
     def update_users_status(id, status):
