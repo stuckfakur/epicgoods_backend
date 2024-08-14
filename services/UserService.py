@@ -5,20 +5,27 @@ import re
 
 class Validator:
     @staticmethod
-    def user_validator(name, email, password):
+    def user_validator(id, name, username, email, password, status, consumer_data, is_seller):
+        if not id or not isinstance(id, int):
+            raise ValueError("Id is required")
         if not name or not isinstance(name, str):
             raise ValueError("Name is required")
-        # if not username or not isinstance(username, str):
-        #     raise ValueError("Username is required")
+        if not username or not isinstance(username, str):
+            raise ValueError("Username is required")
         if not email or not isinstance(email, str):
             raise ValueError("Email is required")
         if not password or not isinstance(password, str):
             raise ValueError("Password is required")
-
+        if not status or not isinstance(status, str):
+            raise ValueError("Status is required")  
+        if not consumer_data or not isinstance(consumer_data, str):
+            raise ValueError("Consumer data is required")
+        if not is_seller or not isinstance(is_seller, str):
+            raise ValueError("Is seller is required")
         
-        # regex_username = '^[a-zA-Z0-9]*$'
-        # if not re.match(regex_username, username):
-        #     raise ValueError('only alpabeth and number is allowed in username')
+        regex_username = '^[a-zA-Z0-9]*$'
+        if not re.match(regex_username, username):
+            raise ValueError('only alpabeth and number is allowed in username')
         regex_email = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"
         if not re.match(regex_email, email):
             raise ValueError('please input the valid email')
@@ -76,23 +83,22 @@ class UserService:
         return data
 
     @staticmethod
-    def update_users(id, name, username, email, password, consumer_data):
-        Validator.user_validator(name, username, email, password, consumer_data)
-        user = UserRepository.get_users_by_id(id)
-        if user:
-            return NotFoundError("User not found")
-        try:
-            user = UserRepository.update_users(
-                id,
-                name,
-                username,
-                email,
-                password,
-                consumer_data
+    def update_users(id, name, username, email, password, status, consumer_data, is_seller):
+        Validator.user_validator(id, name, username, email, password, status, consumer_data, is_seller)
+        data = UserRepository.get_users_by_id(id)
+        if not data:
+            raise NotFoundError("User not found")
+        
+        UserRepository.update_users(
+            id,
+            name,
+            username,
+            email,
+            password,
+            status,
+            consumer_data,
+            is_seller
             )
-            return user
-        except Exception as e:
-            raise e
         
     @staticmethod
     def update_users_status(id, status):
@@ -101,6 +107,15 @@ class UserService:
             raise NotFoundError('user not found')
 
         user = UserRepository.update_users_status(id, status)
+        return user
+
+    @staticmethod
+    def update_users_is_seller(id, is_seller):
+        data = UserService.get_users_by_id(id)
+        if not data:
+            raise NotFoundError('user not found')
+
+        user = UserRepository.update_users_is_seller(id, is_seller)
         return user
 
     @staticmethod

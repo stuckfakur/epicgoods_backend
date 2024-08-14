@@ -16,6 +16,7 @@ class UserForm:
         self.status = data.get('status')
         self.password = data.get('password')
         self.consumer_data = data.get('consumer_data')
+        self.is_seller = data.get('is_seller')
 
 @user_bp.route('/api/users', methods=['POST'])
 @jwt_required()
@@ -75,19 +76,20 @@ def api_get_mydata_user():
 def api_update_users(id):
     try:
         form = UserForm()
-        users_updated = UserService.update_users(
+        user = UserService.update_users(
             id,
             form.name,
             form.username,
             form.email,
             form.password,
             form.status,
-            form.consumer_data
+            form.consumer_data,
+            form.is_seller
         )
         return jsonify({
             'message': 'User updated successfully',
             'status': 201,
-            'data': users_updated.to_dict()
+            'data': user.to_dict()
         }), 200
     except ValueError as e:
         return jsonify({'error': {
@@ -112,6 +114,29 @@ def api_update_user_status(id):
         )
         return jsonify({
             'message': 'user status updated successfully',
+            'status': 201,
+            'data': user.to_dict()
+        }), 201
+    except ValueError as e:
+        return jsonify({'error': {
+            'message': str(e)
+        }}), 400
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e)
+        }}), 404
+    
+@user_bp.route('/users/<int:id>/is_seller', methods=['PATCH'])
+@jwt_required()
+def api_update_user_is_seller(id):
+    try:
+        form = UserForm()
+        user = UserService.update_users_is_seller(
+            id,
+            form.is_seller
+        )
+        return jsonify({
+            'message': 'user is_seller updated successfully',
             'status': 201,
             'data': user.to_dict()
         }), 201
