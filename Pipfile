@@ -17,6 +17,8 @@ bcrypt = "*"
 flask-migrate = "*"
 flask-cors = "*"
 mailjet-rest = "*"
+flask-openapi3 = "*"
+pydantic = {extras = ["email"], version = "*"}
 
 [dev-packages]
 

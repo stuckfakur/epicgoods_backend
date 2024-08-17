@@ -1,11 +1,24 @@
-from flask import Blueprint, request, jsonify
-from services.CategoryService import CategoryService
-from flask_jwt_extended import jwt_required
-from utils.exception import NotFoundError
-from flasgger import swag_from
 import os
 
-category_bp = Blueprint('category_bp', __name__)
+from flasgger import swag_from
+from flask import request, jsonify
+from flask_jwt_extended import jwt_required
+from flask_openapi3 import APIBlueprint, Tag
+
+from routes.form.CategoryForm import CategoryPath, CreateBody, UpdateBody
+
+from config import Config
+from services.CategoryService import CategoryService
+from utils.exception import NotFoundError
+
+JWT = Config.JWT
+
+__version__ = "/v1"
+__bp__ = "/categories"
+url_prefix = __version__ + __bp__
+tag = Tag(name="Category", description="Category API")
+category_bp = APIBlueprint(__bp__, __name__, url_prefix=url_prefix, abp_tags=[tag], abp_security=JWT)
+
 
 class CategoryForm:
     def __init__(self):
@@ -14,10 +27,11 @@ class CategoryForm:
         self.category_name = data.get('category_name')
         self.description = data.get('description')
 
-@category_bp.route('/categories', methods=['POST'])
+
+@category_bp.post("")
 @jwt_required()
 @swag_from(os.path.join(os.path.dirname(__file__), 'docs/Category/CreateCategory.yml'))
-def api_create_category():
+def api_create_category(body: CreateBody):
     try:
         form = CategoryForm()
         category = CategoryService.create_category(
@@ -36,7 +50,8 @@ def api_create_category():
             'status': 400
         }), 400
 
-@category_bp.route('/categories', methods=['GET'])
+
+@category_bp.get("")
 @jwt_required()
 def api_get_all_category():
     sort = request.args.get('sort')
@@ -50,9 +65,9 @@ def api_get_all_category():
     }) if category else ('', 404)
 
 
-@category_bp.route('/categories/<int:id>', methods=['GET'])
+@category_bp.get("/<int:id>")
 @jwt_required()
-def api_get_category_by_id(id):
+def api_get_category_by_id(path: CategoryPath):
     try:
         category = CategoryService.get_category_by_id(id)
         return jsonify({
@@ -65,9 +80,10 @@ def api_get_category_by_id(id):
             'message': str(e)
         }}), 404
 
-@category_bp.route('/categories/<int:id>', methods=['PUT'])
+
+@category_bp.put("/<int:id>")
 @jwt_required()
-def api_update_category(id):
+def api_update_category(path: CategoryPath, body: UpdateBody):
     try:
         form = CategoryForm()
         category_updated = CategoryService.update_category(id, form.category_slug, form.category_name, form.description)
@@ -86,8 +102,9 @@ def api_update_category(id):
             'message': str(e),
             'status': 404
         }}), 404
-    
-@category_bp.route('/categories/<int:id>/category_slug', methods=['PATCH'])
+
+
+@category_bp.patch("/<int:id>/category_slug")
 @jwt_required()
 def api_update_category_slug(id):
     try:
@@ -109,8 +126,9 @@ def api_update_category_slug(id):
         return jsonify({'error': {
             'message': str(e)
         }}), 404
-    
-@category_bp.route('/categories/<int:id>/category_name', methods=['PATCH'])
+
+
+@category_bp.patch("/<int:id>/category_name")
 @jwt_required()
 def api_update_category_name(id):
     try:
@@ -133,18 +151,19 @@ def api_update_category_name(id):
             'message': str(e)
         }}), 404
 
-@category_bp.route('/categories/<int:id>', methods=['DELETE'])
+
+@category_bp.delete("/<int:id>")
 @jwt_required()
 def api_delete_category(id):
     try:
         CategoryService.delete_category(id)
         return jsonify({
-            'message': 'Category deleted successfully', 
+            'message': 'Category deleted successfully',
             'status': 200
-        }) ,200
-    
+        }), 200
+
     except NotFoundError as e:
         return jsonify({'error': {
-            'message': str(e), 
+            'message': str(e),
             'status': 404
         }}), 404

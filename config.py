@@ -13,6 +13,7 @@ class Config:
     SQLALCHEMY_DATABASE_URI = f"mysql+mysqlconnector://{USERNAME}:{PASSWORD}@{HOST}/{DATABASE}"
     SQLALCHEMY_TRACK_MODIFICATION = False
 
+    JWT = [{"jwt": []}]
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']

@@ -1,13 +1,25 @@
-from flask import Blueprint, request, jsonify, make_response 
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
-from models.User import db
-from services.UserService import UserService
-from models.User import User, TokenBlacklist
-from utils.email_register import send_email
-from flasgger import swag_from
 import os
 
-auth_bp = Blueprint('auth_bp', __name__)
+from flasgger import swag_from
+from flask import request, jsonify, make_response
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
+from flask_openapi3 import APIBlueprint, Tag
+
+from config import Config
+from routes.form.AuthForm import LoginBody
+from models.User import User, TokenBlacklist
+from models.User import db
+from services.UserService import UserService
+from utils.email_register import send_email
+
+JWT = Config.JWT
+__version__ = "/v1"
+__bp__ = "/auth"
+url_prefix = __version__ + __bp__
+tag = Tag(name="Auth", description="Auth API")
+auth_bp = APIBlueprint(__bp__, __name__, url_prefix=url_prefix, abp_tags=[tag])
+
+
 class UserForm:
     def __init__(self):
         data = request.get_json()
@@ -17,7 +29,8 @@ class UserForm:
         self.password = data.get('password')
         self.consumer_data = data.get('consumer_data')
 
-@auth_bp.route('/register', methods=['POST'])
+
+@auth_bp.post("/register")
 @swag_from(os.path.join(os.path.dirname(__file__), 'docs/Auth/Register.yml'))
 def api_register():
     try:
@@ -35,14 +48,15 @@ def api_register():
             'data': user.to_dict()
         }), 201
     except ValueError as e:
-        return jsonify({'error':{
+        return jsonify({'error': {
             'message': str(e),
             'status': 400
         }}), 400
 
-@auth_bp.route('/login', methods=['POST'])
+
+@auth_bp.post("/login")
 @swag_from(os.path.join(os.path.dirname(__file__), 'docs/Auth/Login.yml'))
-def api_login():
+def api_login(body: LoginBody):
     data = request.get_json()
 
     if not data or 'email' not in data or 'password' not in data:
@@ -57,7 +71,7 @@ def api_login():
     if user and user.check_password(password):
         if user.status == '1':
             additional_claims = {
-                'id' : user.id,
+                'id': user.id,
                 'name': user.name,
                 'username': user.username,
                 'email': user.email,
@@ -75,7 +89,9 @@ def api_login():
         return jsonify({'error': {
             'message': 'Invalid Email or password'
         }}), 401
-@auth_bp.route('/refresh', methods=['POST'])
+
+
+@auth_bp.post('/options/refresh')
 def refresh_option():
     response = make_response()
     response.headers['Acces-Control-Allow-Origin'] = 'http://0.0.0.0/0'
@@ -85,7 +101,8 @@ def refresh_option():
 
     return response
 
-@auth_bp.route('/refresh', methods=['POST'])
+
+@auth_bp.post('/refresh')
 @jwt_required(refresh=True)
 def refresh():
     current_user = get_jwt_identity()
@@ -99,7 +116,8 @@ def refresh():
     response.headers['Access-Control-Allow-Credentials'] = 'true'
     return response
 
-@auth_bp.route('/logout', methods=['POST'])
+
+@auth_bp.post('/logout')
 @jwt_required()
 @swag_from(os.path.join(os.path.dirname(__file__), 'docs/Auth/Logout.yml'))
 def api_logout():
