@@ -17,7 +17,7 @@ class UserForm:
         self.password = data.get('password')
         self.consumer_data = data.get('consumer_data')
 
-@user_bp.route('/api/users', methods=['POST'])
+@user_bp.route('/users', methods=['POST'])
 @jwt_required()
 def api_create_users():
     try:

@@ -52,6 +52,24 @@ class CategoryService:
             raise e
 
     @staticmethod
+    def update_category_slug(id, category_slug):
+        data = CategoryRepository.get_category_by_id(id)
+        if not data:
+            raise NotFoundError('Category Slug not found')
+
+        category = CategoryRepository.update_category_slug(id, category_slug)
+        return category
+
+    @staticmethod
+    def update_category_name(id, category_name):
+        data = CategoryRepository.get_category_by_id(id)
+        if not data:
+            raise NotFoundError('Category name not found')
+
+        category = CategoryRepository.update_category_name(id, category_name)
+        return category
+
+    @staticmethod
     def delete_category(id):
         data = CategoryRepository.get_category_by_id(id)
         if not data:

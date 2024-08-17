@@ -32,6 +32,7 @@ app.register_blueprint(product_bp, url_prefix='/api')
 app.register_blueprint(follower_bp, url_prefix='/api')
 app.register_blueprint(auth_bp, url_prefix='/auth')
 
+
 swagger = Swagger(app)
 connection_check()
 

@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 from services.CategoryService import CategoryService
 from flask_jwt_extended import jwt_required
 from utils.exception import NotFoundError
+from flasgger import swag_from
+import os
 
 category_bp = Blueprint('category_bp', __name__)
 
@@ -14,6 +16,7 @@ class CategoryForm:
 
 @category_bp.route('/categories', methods=['POST'])
 @jwt_required()
+@swag_from(os.path.join(os.path.dirname(__file__), 'docs/Category/CreateCategory.yml'))
 def api_create_category():
     try:
         form = CategoryForm()
@@ -84,6 +87,52 @@ def api_update_category(id):
             'status': 404
         }}), 404
     
+@category_bp.route('/categories/<int:id>/category_slug', methods=['PATCH'])
+@jwt_required()
+def api_update_category_slug(id):
+    try:
+        form = CategoryForm()
+        category = CategoryService.update_category_slug(
+            id,
+            form.category_slug
+        )
+        return jsonify({
+            'message': 'Category slug updated successfully',
+            'status': 201,
+            'data': category.to_dict()
+        }), 201
+    except ValueError as e:
+        return jsonify({'error': {
+            'message': str(e)
+        }}), 400
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e)
+        }}), 404
+    
+@category_bp.route('/categories/<int:id>/category_name', methods=['PATCH'])
+@jwt_required()
+def api_update_category_name(id):
+    try:
+        form = CategoryForm()
+        category = CategoryService.update_category_name(
+            id,
+            form.category_name
+        )
+        return jsonify({
+            'message': 'Category slug updated successfully',
+            'status': 201,
+            'data': category.to_dict()
+        }), 201
+    except ValueError as e:
+        return jsonify({'error': {
+            'message': str(e)
+        }}), 400
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e)
+        }}), 404
+
 @category_bp.route('/categories/<int:id>', methods=['DELETE'])
 @jwt_required()
 def api_delete_category(id):

@@ -1,6 +1,27 @@
 from models.Seller import Seller, db
+from sqlalchemy.exc import DataError
 
 class SellerRepository:
+    @staticmethod
+    def create_seller(
+        user_id,
+        location_id,
+        address,
+        store_name,
+        store_info,
+        description,
+    ):
+       new_seller = Seller(
+           user_id = user_id,
+           location_id = location_id,
+           address = address,
+           store_name = store_name,
+           store_info = store_info,
+           description = description,
+       )
+       db.session.add(new_seller)
+       db.session.commit()
+       return new_seller
     
     @staticmethod
     def get_all_seller(sort=None, order='asc'):
@@ -15,30 +36,46 @@ class SellerRepository:
     @staticmethod
     def get_seller_by_id(id):
         return Seller.query.get(id)
-
-    @staticmethod
-    def create_seller(
-        store_name,
-        store_info,
-        description
-    ):
-       new_seller = Seller(
-           store_name = store_name,
-           store_info = store_info,
-           description = description
-       )
-       db.session.add(new_seller)
-       db.session.commit()
-       return new_seller
     
     @staticmethod
-    def update_seller(id, data):
-        seller = Seller.query.get(id)
-        if seller:
-            for key, value in data.items():
-                setattr(seller, key, value)
+    def existing_store_name(store_name, user_id=None):
+        existing = Seller.query.filter_by(store_name=store_name)
+        if user_id:
+            existing = existing.filter(Seller.id != user_id)
+
+        existing = existing.first()
+        return True if existing else False
+    
+    @staticmethod
+    def update_seller(id, location_id, address, store_name, store_type, store_info, description):
+        try:
+            data = Seller.query.get(id)
+            if not data:
+                return None  # Seller not found
+
+            # Update the seller fields
+            data.location_id = location_id
+            data.address = address
+            data.store_type = store_type
+            data.store_info = store_info
+            data.description = description
+            data.updated_at = db.func.now()
+
+            if store_name and store_name != data.store_name:
+                if SellerRepository.existing_store_name(store_name, id):
+                    raise ValueError('Store name already exists')
+                data.store_name = store_name
+
             db.session.commit()
-        return seller
+            return data
+
+        except DataError as e:
+            db.session.rollback()
+            raise ValueError(f"Database error occurred: {str(e)}")
+        except Exception as e:
+            db.session.rollback()
+            raise e
+
     
     @staticmethod
     def delete_seller(id):

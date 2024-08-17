@@ -56,6 +56,40 @@ class CategoryRepository:
             raise e
         
     @staticmethod
+    def update_category_slug(id, category_slug):
+        try:
+            category = Category.query.get(id)
+            if not category:
+                return None
+
+            category.category_slug = category_slug
+            category.updated_at = db.func.now()
+
+            db.session.commit()
+
+            return category
+        except Exception as e:
+            db.session.rollback()
+            return e
+
+    @staticmethod
+    def update_category_name(id, category_name):
+        try:
+            category = Category.query.get(id)
+            if not category:
+                return None
+
+            category.category_name = category_name
+            category.updated_at = db.func.now()
+
+            db.session.commit()
+
+            return category
+        except Exception as e:
+            db.session.rollback()
+            return e
+
+    @staticmethod
     def delete_category(id):
         category = Category.query.get(id)
         if category:
