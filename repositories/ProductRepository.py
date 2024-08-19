@@ -52,10 +52,10 @@ class ProductRepository:
 
     @staticmethod
     def update_product(
-            id,
+            productId,
             product_slug,
             product_photo,
-            product_gellery,
+            product_gallery,
             product_name,
             product_price,
             product_stock,
@@ -65,12 +65,12 @@ class ProductRepository:
             category_id
     ):
         try:
-            data = Product.query.get(id)
+            data = Product.query.get(productId)
             if not data:
                 return None
             data.product_slug = product_slug
             data.product_photo = product_photo
-            data.product_gellery = product_gellery
+            data.product_gallery = product_gallery
             data.product_name = product_name
             data.product_price = product_price
             data.product_stock = product_stock
@@ -78,6 +78,7 @@ class ProductRepository:
             data.product_detail = product_detail
             data.status = status
             data.category_id = category_id
+            
             data.updated_at = db.func.now()
 
             db.session.commit()
