@@ -90,6 +90,22 @@ class CategoryRepository:
             return e
 
     @staticmethod
+    def update_category_description(id, description):
+        try:
+            category = Category.query.get(id)
+            if not category:
+                return None
+
+            category.description = description
+            category.updated_at = db.func.now()
+
+            db.session.commit()
+            return category
+        except Exception as e:
+            db.session.rollback()
+            return e
+
+    @staticmethod
     def delete_category(id):
         category = Category.query.get(id)
         if category:

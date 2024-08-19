@@ -5,7 +5,7 @@ from flask import request, jsonify
 from flask_jwt_extended import jwt_required
 from flask_openapi3 import APIBlueprint, Tag
 
-from routes.form.CategoryForm import CategoryPath, CreateBody, UpdateBody
+from routes.form.CategoryForm import CategoryPath, CreateBody, UpdateBody, UpdateCategorySlugBody, UpdateCategoryNameBody, UpdateCategoryDescriptionBody
 
 from config import Config
 from services.CategoryService import CategoryService
@@ -28,9 +28,8 @@ class CategoryForm:
         self.description = data.get('description')
 
 
-@category_bp.post("")
+@category_bp.post("/create")
 @jwt_required()
-@swag_from(os.path.join(os.path.dirname(__file__), 'docs/Category/CreateCategory.yml'))
 def api_create_category(body: CreateBody):
     try:
         form = CategoryForm()
@@ -51,7 +50,7 @@ def api_create_category(body: CreateBody):
         }), 400
 
 
-@category_bp.get("")
+@category_bp.get("/all")
 @jwt_required()
 def api_get_all_category():
     sort = request.args.get('sort')
@@ -69,7 +68,7 @@ def api_get_all_category():
 @jwt_required()
 def api_get_category_by_id(path: CategoryPath):
     try:
-        category = CategoryService.get_category_by_id(id)
+        category = CategoryService.get_category_by_id(path.id)
         return jsonify({
             'status': 200,
             'data': category
@@ -106,11 +105,11 @@ def api_update_category(path: CategoryPath, body: UpdateBody):
 
 @category_bp.patch("/<int:id>/category_slug")
 @jwt_required()
-def api_update_category_slug(id):
+def api_update_category_slug(path: CategoryPath, body: UpdateCategorySlugBody):
     try:
         form = CategoryForm()
         category = CategoryService.update_category_slug(
-            id,
+            path.id,
             form.category_slug
         )
         return jsonify({
@@ -130,11 +129,11 @@ def api_update_category_slug(id):
 
 @category_bp.patch("/<int:id>/category_name")
 @jwt_required()
-def api_update_category_name(id):
+def api_update_category_name(path: CategoryPath, body: UpdateCategoryNameBody):
     try:
         form = CategoryForm()
         category = CategoryService.update_category_name(
-            id,
+            path.id,
             form.category_name
         )
         return jsonify({
@@ -151,12 +150,34 @@ def api_update_category_name(id):
             'message': str(e)
         }}), 404
 
-
+@category_bp.patch("/<int:id>/description")
+@jwt_required()
+def api_update_category_description(path: CategoryPath, body: UpdateCategoryDescriptionBody):
+    try:
+        form = CategoryForm()
+        category = CategoryService.update_category_description(
+            path.id,
+            form.description
+        )
+        return jsonify({
+            'message': 'Category description updated successfully',
+            'status': 201,
+            'data': category.to_dict()
+        }), 201
+    except ValueError as e:
+        return jsonify({'error': {
+            'message': str(e)
+        }}), 400
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e)
+        }}), 404
+    
 @category_bp.delete("/<int:id>")
 @jwt_required()
-def api_delete_category(id):
+def api_delete_category(path: CategoryPath):
     try:
-        CategoryService.delete_category(id)
+        CategoryService.delete_category(path.id)
         return jsonify({
             'message': 'Category deleted successfully',
             'status': 200

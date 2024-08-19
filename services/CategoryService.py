@@ -68,6 +68,15 @@ class CategoryService:
 
         category = CategoryRepository.update_category_name(id, category_name)
         return category
+    
+    @staticmethod
+    def update_category_description(id, description):
+        data = CategoryRepository.get_category_by_id(id)
+        if not data:
+            raise NotFoundError('Category description not found')
+
+        category = CategoryRepository.update_category_description(id, description)
+        return category
 
     @staticmethod
     def delete_category(id):
