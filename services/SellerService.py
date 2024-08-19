@@ -100,6 +100,78 @@ class SellerService:
             raise e
     
     @staticmethod
+    def update_seller_location_id(sellerId, location_id):
+        data = SellerService.get_seller_by_id(sellerId)
+        if not data:
+            raise NotFoundError("Seller not found")
+        
+        seller = SellerRepository.update_seller_location_id(sellerId, location_id)
+        return seller
+    
+    @staticmethod
+    def update_seller_address(sellerId, address):
+        data = SellerService.get_seller_by_id(sellerId)
+        if not data:
+            raise NotFoundError("Seller not found")
+        
+        seller = SellerRepository.update_seller_address(sellerId, address)
+        return seller
+    
+    @staticmethod
+    def update_seller_store_name(sellerId, store_name):
+        data = SellerService.get_seller_by_id(sellerId)
+        if not data:
+            raise NotFoundError("Seller not found")
+        
+        seller = SellerRepository.update_seller_store_name(sellerId, store_name)
+        return seller
+    
+    @staticmethod
+    def update_seller_store_type(sellerId, store_type):
+        data = SellerService.get_seller_by_id(sellerId)
+        if not data:
+            raise NotFoundError("Seller not found")
+        
+        seller = SellerRepository.update_seller_store_type(sellerId, store_type)
+        return seller
+
+    @staticmethod
+    def update_seller_store_info(sellerId, store_info):
+        data = SellerService.get_seller_by_id(sellerId)
+        if not data:
+            raise NotFoundError("Seller not found")
+        
+        seller = SellerRepository.update_seller_store_info(sellerId, store_info)
+        return seller
+
+    @staticmethod
+    def update_seller_store_type(sellerId, store_type):
+        data = SellerService.get_seller_by_id(sellerId)
+        if not data:
+            raise NotFoundError("Seller not found")
+        
+        seller = SellerRepository.update_seller_store_type(sellerId, store_type)
+        return seller
+    
+    @staticmethod
+    def update_seller_description(sellerId, description):
+        data = SellerService.get_seller_by_id(sellerId)
+        if not data:
+            raise NotFoundError("Seller not found")
+        
+        seller = SellerRepository.update_seller_description(sellerId, description)
+        return seller
+    
+    @staticmethod
+    def update_seller_store_status(sellerId, store_status):
+        data = SellerService.get_seller_by_id(sellerId)
+        if not data:
+            raise NotFoundError("Seller not found")
+        
+        seller = SellerRepository.update_seller_store_status(sellerId, store_status)
+        return seller
+    
+    @staticmethod
     def delete_seller(id):
         user = SellerRepository.get_seller_by_id(id)
         if not user:

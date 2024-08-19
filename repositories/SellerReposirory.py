@@ -76,7 +76,103 @@ class SellerRepository:
             db.session.rollback()
             raise e
 
+    @staticmethod
+    def update_seller_location_id(sellerId, location_id):
+        seller = Seller.query.get(sellerId)
+        try:
+            seller = Seller.query.get(sellerId)
+            if not seller:
+                return None
+            
+            seller.location_id = location_id
+            seller.updated_at = db.func.now()
+
+            db.session.commit()
+            return seller
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        
+    @staticmethod
+    def update_seller_address(sellerId, address):
+        try:
+            seller = Seller.query.get(sellerId)
+            if not seller:
+                return None
+            
+            seller.address = address
+            seller.updated_at = db.func.now()
+
+            db.session.commit()
+            return seller
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        
+    @staticmethod
+    def update_seller_store_name(sellerId, store_name):
+        try:
+            seller = Seller.query.get(sellerId)
+            if not seller:
+                return None
+            
+            seller.store_name = store_name
+            seller.updated_at = db.func.now()
+
+            db.session.commit()
+            return seller
+        except Exception as e:
+            db.session.rollback()
+            raise e
     
+    @staticmethod
+    def update_seller_store_type(sellerId, store_type):
+        try:
+            seller = Seller.query.get(sellerId)
+            if not seller:
+                return None
+            
+            seller.store_type = store_type
+            seller.updated_at = db.func.now()
+
+            db.session.commit()
+            return seller
+        except Exception as e:
+            db.session.rollback()
+            raise e
+
+    @staticmethod
+    def update_seller_store_info(sellerId, store_info):
+        try:
+            seller = Seller.query.get(sellerId)
+            if not seller:
+                return None
+            
+            seller.store_info = store_info
+            seller.updated_at = db.func.now()
+
+            db.session.commit()
+            return seller
+        except Exception as e:
+            db.session.rollback()
+            raise e
+
+    @staticmethod
+    def update_seller_description(sellerId, description):
+        try:
+            seller = Seller.query.get(sellerId)
+            if not seller:
+                return None
+            
+            seller.description = description
+            seller.updated_at = db.func.now()
+
+            db.session.commit()
+            return seller
+        except Exception as e:
+            db.session.rollback()
+            raise e
+
     @staticmethod
     def delete_seller(id):
         seller = Seller.query.get(id)
