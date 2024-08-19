@@ -47,7 +47,15 @@ class SellerRepository:
         return True if existing else False
     
     @staticmethod
-    def update_seller(id, location_id, address, store_name, store_type, store_info, description):
+    def update_seller(
+        id, 
+        location_id, 
+        address, 
+        store_name, 
+        store_type, 
+        store_info, 
+        description
+    ):
         try:
             data = Seller.query.get(id)
             if not data:

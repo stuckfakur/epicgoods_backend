@@ -1,9 +1,18 @@
 from repositories.ProductRepository import ProductRepository
 from utils.exception import NotFoundError
+from sqlalchemy.exc import DataError
+import re
 
 class Validator:
     @staticmethod
-    def product_validator(product_slug, product_name, product_price, product_stock, product_condition, product_detail, status, user_id, category_id):
+    def product_validator(
+        product_slug, 
+        product_name, 
+        product_price, 
+        product_stock, 
+        product_condition, 
+        product_detail
+    ):
         if not product_slug or not isinstance(product_slug, str):
             raise ValueError("Product slug is required")
         if not product_name or not isinstance(product_name, str):
@@ -16,13 +25,26 @@ class Validator:
             raise ValueError("Product condition is required")
         if not product_detail or not isinstance(product_detail, str):
             raise ValueError("Product detail is required")
-        if not status or not isinstance(status, str):
-            raise ValueError("Status is required")
-        if not user_id or not isinstance(user_id, int):
-            raise ValueError("User id is required")
+        
+        regex_product_name = '^[a-zA-Z0-9]*$'
+        if not re.match(regex_product_name, product_name):
+            raise ValueError("Product name cannot contain special characters")
+
+    @staticmethod
+    def extra_validator(category_id):
         if not category_id or not isinstance(category_id, int):
             raise ValueError("Category id is required")
-        
+
+    @staticmethod
+    def seller_validator(seller_id):
+        if not seller_id or not isinstance(seller_id, int):
+            raise ValueError("Seller id is required")
+
+    @staticmethod
+    def status_validator(status):
+        if not status or not isinstance(status, str):
+            raise ValueError("Status is required")
+
     @staticmethod
     def not_negative_price(product_price):
         if product_price < 0:
@@ -31,30 +53,28 @@ class Validator:
 class ProductService:
     @staticmethod
     def create_products(
-        product_slug:object,
-        product_photo:object,
-        product_gellery:object,
-        product_name:object ,
-        product_price:object,
-        product_stock:object,
-        product_condition:object,
-        product_detail:object,
-        status:object,
-        user_id:object,
-        category_id:object
+        product_slug,
+        product_photo,
+        product_gellery,
+        product_name,
+        product_price,
+        product_stock,
+        product_condition,
+        product_detail,
+        seller_id,
+        category_id
 
-    ) -> object:
+    ):
         Validator.product_validator(
             product_slug,
             product_name, 
             product_price, 
             product_stock, 
             product_condition, 
-            product_detail, 
-            status,
-            user_id,
-            category_id
+            product_detail
         )
+        Validator.extra_validator(category_id)
+        Validator.seller_validator(seller_id)
         Validator.not_negative_price(product_price)
         product = ProductRepository.api_create_products(
             product_slug,
@@ -65,8 +85,7 @@ class ProductService:
             product_stock,
             product_condition,
             product_detail,
-            status,
-            user_id,
+            seller_id,
             category_id
         )
         return product
@@ -83,6 +102,57 @@ class ProductService:
             raise NotFoundError("Product not found")
         return product.to_dict()
 
+    @staticmethod
+    def update_product(
+        id, 
+        product_slug, 
+        product_photo, 
+        product_gellery, 
+        product_name, 
+        product_price, 
+        product_stock, 
+        product_condition, 
+        product_detail, 
+        status,
+        seller_id,
+        category_id
+    ):
+        Validator.product_validator(
+            product_slug,
+            product_name, 
+            product_price, 
+            product_stock, 
+            product_condition, 
+            product_detail
+        )
+        Validator.extra_validator(category_id)
+        Validator.seller_validator(seller_id)
+        Validator.status_validator(status)
+        Validator.not_negative_price(product_price)
+        product = ProductRepository.get_product_by_id(id)
+        if not product:
+            raise NotFoundError("Product not found")
+        try:
+            product = ProductRepository.update_product(
+                id, 
+                product_slug, 
+                product_photo, 
+                product_gellery, 
+                product_name, 
+                product_price, 
+                product_stock, 
+                product_condition, 
+                product_detail, 
+                status,
+                seller_id,
+                category_id
+            )
+            return product
+        except DataError as e:
+            raise e
+        except Exception as e:
+            raise e
+        
     @staticmethod
     def delete_product(id):
         data = ProductRepository.get_product_by_id(id)

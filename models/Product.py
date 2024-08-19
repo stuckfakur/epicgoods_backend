@@ -3,7 +3,7 @@ from . import db
 class Product( db.Model):
     __tablename__ = 'products'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.ForeignKey('users.id'))
+    seller_id = db.Column(db.ForeignKey('sellers.id'))
     category_id = db.Column(db.ForeignKey('categories.id'))
     product_slug = db.Column(db.String(80), unique=True, nullable=False)
     product_photo = db.Column(db.String(80))
@@ -18,7 +18,7 @@ class Product( db.Model):
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 
     category = db.relationship('Category', backref='products', lazy=True)
-    user = db.relationship('User', backref='products', lazy=True)
+    seller = db.relationship('Seller', backref='products', lazy=True)
     
     def to_dict(self):
         return{
@@ -38,9 +38,9 @@ class Product( db.Model):
                 'category_name' : self.category.category_name,
                 'description' : self.category.description
             },
-            'user' : {
-                'id' : self.user.id,
-                'name' : self.user.name
+            'seller' : {
+                'id' : self.seller.id,
+                'store_name' : self.seller.store_name 
             },
             'created_at' : self.created_at,
             'updated_at' : self.updated_at

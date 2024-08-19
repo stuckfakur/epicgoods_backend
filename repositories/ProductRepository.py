@@ -1,4 +1,5 @@
 from models.Product import Product, db
+from sqlalchemy.exc import DataError
 
 class ProductRepository:
     @staticmethod
@@ -12,7 +13,7 @@ class ProductRepository:
         product_condition,
         product_detail,
         status,
-        user_id,
+        seller_id,
         category_id
 
     ):
@@ -26,7 +27,7 @@ class ProductRepository:
             product_condition = product_condition,
             product_detail = product_detail,
             status = status,
-            user_id = user_id,
+            seller_id = seller_id,
             category_id = category_id
        )
        db.session.add(new_product)
@@ -47,6 +48,45 @@ class ProductRepository:
     @staticmethod
     def get_product_by_id(id):
         return Product.query.get(id)
+    
+    @staticmethod
+    def update_product(
+        id, 
+        product_slug, 
+        product_photo, 
+        product_gellery, 
+        product_name, 
+        product_price, 
+        product_stock, 
+        product_condition, 
+        product_detail, 
+        status,
+        category_id
+    ):
+        try:
+            data = Product.query.get(id)
+            if not data:
+                return None
+            data.product_slug = product_slug
+            data.product_photo = product_photo
+            data.product_gellery = product_gellery
+            data.product_name = product_name
+            data.product_price = product_price
+            data.product_stock = product_stock
+            data.product_condition = product_condition
+            data.product_detail = product_detail
+            data.status = status
+            data.category_id = category_id
+            data.updated_at = db.func.now()
+
+            db.session.commit()
+            return data
+        
+        except DataError as e:
+            raise ValueError(f"Database error occurred: {str(e)}")
+        except Exception as e:
+            db.session.rollback()
+            raise e
 
     @staticmethod
     def delete_product(id):

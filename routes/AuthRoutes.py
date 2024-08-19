@@ -6,7 +6,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 from flask_openapi3 import APIBlueprint, Tag
 
 from config import Config
-from routes.form.AuthForm import LoginBody
+from routes.form.AuthForm import LoginBody, RegisterBody
 from models.User import User, TokenBlacklist
 from models.User import db
 from services.UserService import UserService
@@ -32,7 +32,7 @@ class UserForm:
 
 @auth_bp.post("/register")
 @swag_from(os.path.join(os.path.dirname(__file__), 'docs/Auth/Register.yml'))
-def api_register():
+def api_register(body: RegisterBody):
     try:
         user_form = UserForm()
         user = UserService.create_users(

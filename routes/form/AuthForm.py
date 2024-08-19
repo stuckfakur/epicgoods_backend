@@ -5,3 +5,9 @@ from pydantic import BaseModel, Field, EmailStr
 class LoginBody(BaseModel):
     email: EmailStr
     password: str
+
+class RegisterBody(BaseModel):
+    name: str
+    email: EmailStr
+    password: str
+
