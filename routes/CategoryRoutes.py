@@ -1,6 +1,5 @@
 import os
 
-from flasgger import swag_from
 from flask import request, jsonify
 from flask_jwt_extended import jwt_required
 from flask_openapi3 import APIBlueprint, Tag
@@ -50,7 +49,7 @@ def api_create_category(body: CreateBody):
         }), 400
 
 
-@category_bp.get("/all")
+@category_bp.get("/ll")
 @jwt_required()
 def api_get_all_category():
     sort = request.args.get('sort')
