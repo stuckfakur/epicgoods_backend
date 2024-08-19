@@ -77,10 +77,10 @@ class ProductService:
             product_slug,
             product_photo,
             product_gallery,
-            product_name, 
-            product_price, 
-            product_stock, 
-            product_condition, 
+            product_name,
+            product_price,
+            product_stock,
+            product_condition,
             product_detail
         )
         Validator.extra_validator(category_id)
@@ -141,24 +141,24 @@ class ProductService:
         Validator.extra_validator(category_id)
         Validator.status_validator(status)
         Validator.not_negative_price(product_price)
-        product = ProductRepository.get_product_by_id(id)
+        product = ProductRepository.get_product_by_id(productId)
         if not product:
             raise NotFoundError("Product not found")
         try:
             product = ProductRepository.update_product(
-                productId, 
-                product_slug, 
-                product_photo, 
+                productId,
+                product_slug,
+                product_photo,
                 product_gallery,
-                product_name, 
-                product_price, 
-                product_stock, 
-                product_condition, 
-                product_detail, 
+                product_name,
+                product_price,
+                product_stock,
+                product_condition,
+                product_detail,
                 status,
                 category_id
             )
-            return product
+            return product.to_dict()
         except DataError as e:
             raise e
         except Exception as e:
