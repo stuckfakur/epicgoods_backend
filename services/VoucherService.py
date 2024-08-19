@@ -1,4 +1,5 @@
 from utils.exception import NotFoundError
+from sqlalchemy.exc import DataError
 from repositories.VoucherRepository import VoucherRepository
 import re
 
@@ -25,7 +26,7 @@ class Validator:
 
     @staticmethod
     def exist_voucher(voucher_code):
-        if VoucherRepository.exist_voucher(voucher_code):
+        if VoucherRepository.existing_voucher_code(voucher_code):
             raise ValueError("Voucher code already exists")
         
 class VoucherService:
@@ -37,13 +38,13 @@ class VoucherService:
         voucher_value, 
         voucher_quota
     ):
-        Validator.voucher_type_validator(voucher_type)
         Validator.voucher_validator(
             voucher_name, 
             voucher_code, 
             voucher_value, 
             voucher_quota
         )
+        Validator.voucher_type_validator(voucher_type)
         Validator.exist_voucher(voucher_code)
         voucher = VoucherRepository.create_voucher(
             voucher_name, 
@@ -53,14 +54,52 @@ class VoucherService:
             voucher_quota
         )
         return voucher
-
-
-
-
-
-
     
+    @staticmethod
+    def get_all_voucher(sort=None, order='asc'):
+        voucher = VoucherRepository.get_all_voucher(sort, order)
+        return [voucher.to_dict() for voucher in voucher]
+    
+    @staticmethod
+    def get_voucher_by_id(id):
+        voucher = VoucherRepository.get_voucher_by_id(id)
+        if voucher:
+            return voucher.to_dict()
+        else:
+            return "Voucher not Found"
 
-
-
+    @staticmethod
+    def update_voucher(
+        voucherId,
+        voucher_name,
+        voucher_code,
+        voucher_type,
+        voucher_value, 
+        voucher_quota
+    ):
+        Validator.voucher_validator(
+            voucher_name, 
+            voucher_code, 
+            voucher_value, 
+            voucher_quota
+        )
+        Validator.voucher_type_validator(voucher_type)
+        Validator.exist_voucher(voucher_code)
+        voucher = VoucherService.get_voucher_by_id(voucherId)
+        if not voucher:
+            raise NotFoundError("Voucher not found")
+        try:
+            voucher = VoucherRepository.update_voucher(
+                voucherId,
+                voucher_name,
+                voucher_code,
+                voucher_type,
+                voucher_value, 
+                voucher_quota
+            )
+            return voucher.to_dict()
+        except DataError as e:
+            raise ValueError(f"Database error occurred: {str(e)}")
+        except Exception as e:
+            raise e
 
