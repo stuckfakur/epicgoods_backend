@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask_jwt_extended import jwt_required
 from flask_openapi3 import APIBlueprint, Tag
 
-from routes.form.ProductForm import ProductPath, CreateProductBody, UpdateProductBody
+from routes.form.ProductForm import ProductPath, CreateProductBody, UpdateProductBody, UpdateProductNameBody, UpdateProductSlugBody, UpdateProductCategoryIdBody, UpdateProductPhotoBody, UpdateProductGalleryBody, UpdateProductPriceBody, UpdateProductStockBody, UpdateProductConditionBody, UpdateProductDetailBody, UpdateProductStatusBody
 
 from config import Config
 from utils.exception import NotFoundError
@@ -107,6 +107,206 @@ def api_update_product_by_id(path: ProductPath, body: UpdateProductBody):
         )
         return jsonify({
             'message': 'Product updated successfully',
+            'status': 200,
+            'data': product
+        }), 200
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+            }}), 404
+    
+@product_bp.patch('/<int:id>/category_id')
+@jwt_required()
+def api_update_product_category_id(path: ProductPath, body: UpdateProductCategoryIdBody):
+    try:
+        form = ProductForm()
+        product = ProductService.update_product_category_id(
+            path.id, 
+            form.category_id
+        )
+        return jsonify({
+            'message': 'Product category id updated successfully',
+            'status': 200,
+            'data': product
+        }), 200
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+            }}), 404
+    
+@product_bp.patch('/<int:id>/product_slug')
+@jwt_required()
+def api_update_product_slug(path: ProductPath, body: UpdateProductSlugBody):
+    try:
+        form = ProductForm()
+        product = ProductService.update_product_slug(
+            path.id, 
+            form.product_slug
+        )
+        return jsonify({
+            'message': 'Product slug updated successfully',
+            'status': 200,
+            'data': product
+        }), 200
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+            }}), 404
+    
+@product_bp.patch('/<int:id>/product_photo')
+@jwt_required()
+def api_update_product_photo(path: ProductPath, body: UpdateProductPhotoBody):
+    try:
+        form = ProductForm()
+        product = ProductService.update_product_photo(
+            path.id, 
+            form.product_photo
+        )
+        return jsonify({
+            'message': 'Product photo updated successfully',
+            'status': 200,
+            'data': product
+        }), 200
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+            }}), 404
+    
+@product_bp.patch('/<int:id>/product_gallery')
+@jwt_required()
+def api_update_product_gallery(path: ProductPath, body: UpdateProductGalleryBody):
+    try:
+        form = ProductForm()
+        product = ProductService.update_product_gallery(
+            path.id, 
+            form.product_gallery
+        )
+        return jsonify({
+            'message': 'Product gallery updated successfully',
+            'status': 200,
+            'data': product
+        }), 200
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+            }}), 404
+
+@product_bp.patch('/<int:id>/product_name')
+@jwt_required()
+def api_update_product_name(path: ProductPath, body: UpdateProductNameBody):
+    try:
+        form = ProductForm()
+        product = ProductService.update_product_name(
+            path.id, 
+            form.product_name
+        )
+        return jsonify({
+            'message': 'Product name updated successfully',
+            'status': 200,
+            'data': product
+        }), 200
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+            }}), 404
+    
+@product_bp.patch('/<int:id>/product_price')
+@jwt_required()
+def api_update_product_price(path: ProductPath, body: UpdateProductPriceBody):
+    try:
+        form = ProductForm()
+        product = ProductService.update_product_price(
+            path.id, 
+            form.product_price
+        )
+        return jsonify({
+            'message': 'Product price updated successfully',
+            'status': 200,
+            'data': product
+        }), 200
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+            }}), 404
+
+@product_bp.patch('/<int:id>/product_stock')
+@jwt_required()
+def api_update_product_stock(path: ProductPath, body: UpdateProductStockBody):
+    try:
+        form = ProductForm()
+        product = ProductService.update_product_stock(
+            path.id, 
+            form.product_stock
+        )
+        return jsonify({
+            'message': 'Product stock updated successfully',
+            'status': 200,
+            'data': product
+        }), 200
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+            }}), 404
+
+@product_bp.patch('/<int:id>/product_condition')
+@jwt_required()
+def api_update_product_condition(path: ProductPath, body: UpdateProductConditionBody):
+    try:
+        form = ProductForm()
+        product = ProductService.update_product_condition(
+            path.id, 
+            form.product_condition
+        )
+        return jsonify({
+            'message': 'Product condition updated successfully',
+            'status': 200,
+            'data': product
+        }), 200
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+            }}), 404
+
+@product_bp.patch('/<int:id>/product_detail')
+@jwt_required()
+def api_update_product_detail(path: ProductPath, body: UpdateProductDetailBody):
+    try:
+        form = ProductForm()
+        product = ProductService.update_product_detail(
+            path.id, 
+            form.product_detail
+        )
+        return jsonify({
+            'message': 'Product detail updated successfully',
+            'status': 200,
+            'data': product
+        }), 200
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+            }}), 404
+    
+@product_bp.patch('/<int:id>/status')
+@jwt_required()
+def api_update_product_status(path: ProductPath, body: UpdateProductStatusBody):
+    try:
+        form = ProductForm()
+        product = ProductService.update_product_status(
+            path.id, 
+            form.status
+        )
+        return jsonify({
+            'message': 'Product status updated successfully',
             'status': 200,
             'data': product
         }), 200

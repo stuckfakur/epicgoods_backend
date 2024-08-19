@@ -7,6 +7,8 @@ class Validator:
     @staticmethod
     def product_validator(
         product_slug, 
+        product_photo,
+        product_gallery,
         product_name, 
         product_price, 
         product_stock, 
@@ -15,6 +17,10 @@ class Validator:
     ):
         if not product_slug or not isinstance(product_slug, str):
             raise ValueError("Product slug is required")
+        if not product_photo or not isinstance(product_photo, str):
+            raise ValueError("Product photo is required")
+        if not product_gallery or not isinstance(product_gallery, str):
+            raise ValueError("Product gallery is required")
         if not product_name or not isinstance(product_name, str):
             raise ValueError("Product name is required")
         if not product_price or not isinstance(product_price, int):
@@ -25,6 +31,7 @@ class Validator:
             raise ValueError("Product condition is required")
         if not product_detail or not isinstance(product_detail, str):
             raise ValueError("Product detail is required")
+        
         
         # regex_product_name = '^[a-zA-Z0-9]*$'
         # if not re.match(regex_product_name, product_name):
@@ -68,6 +75,8 @@ class ProductService:
     ):
         Validator.product_validator(
             product_slug,
+            product_photo,
+            product_gallery,
             product_name, 
             product_price, 
             product_stock, 
@@ -75,6 +84,7 @@ class ProductService:
             product_detail
         )
         Validator.extra_validator(category_id)
+        Validator.status_validator(status)
         Validator.seller_validator(seller_id)
         Validator.not_negative_price(product_price)
         product = ProductRepository.api_create_products(
@@ -106,7 +116,7 @@ class ProductService:
 
     @staticmethod
     def update_product(
-        id, 
+        productId,
         product_slug, 
         product_photo, 
         product_gallery,
@@ -116,11 +126,12 @@ class ProductService:
         product_condition, 
         product_detail, 
         status,
-        seller_id,
         category_id
     ):
         Validator.product_validator(
             product_slug,
+            product_photo,
+            product_gallery,
             product_name, 
             product_price, 
             product_stock, 
@@ -128,7 +139,6 @@ class ProductService:
             product_detail
         )
         Validator.extra_validator(category_id)
-        Validator.seller_validator(seller_id)
         Validator.status_validator(status)
         Validator.not_negative_price(product_price)
         product = ProductRepository.get_product_by_id(id)
@@ -136,7 +146,7 @@ class ProductService:
             raise NotFoundError("Product not found")
         try:
             product = ProductRepository.update_product(
-                id, 
+                productId, 
                 product_slug, 
                 product_photo, 
                 product_gallery,
@@ -146,7 +156,6 @@ class ProductService:
                 product_condition, 
                 product_detail, 
                 status,
-                seller_id,
                 category_id
             )
             return product
@@ -154,11 +163,92 @@ class ProductService:
             raise e
         except Exception as e:
             raise e
-        
+    
     @staticmethod
-    def delete_product(id):
-        data = ProductRepository.get_product_by_id(id)
+    def update_product_category_id(productId, category_id):
+        data = ProductRepository.get_product_by_id(productId)
         if not data:
             raise NotFoundError("Product not found")
-        product = ProductRepository.delete_product(id)
+        product = ProductRepository.update_product_category(productId, category_id)
+        return product
+
+    @staticmethod
+    def update_product_slug(productId, product_slug):
+        data = ProductRepository.get_product_by_id(productId)
+        if not data:
+            raise NotFoundError("Product not found")
+        product = ProductRepository.update_product_slug(productId, product_slug)
+        return product
+
+    @staticmethod
+    def update_product_photo(productId, product_photo):
+        data = ProductRepository.get_product_by_id(productId)
+        if not data:
+            raise NotFoundError("Product not found")
+        product = ProductRepository.update_product_photo(productId, product_photo)
+        return product
+
+    @staticmethod
+    def update_product_gallery(productId, product_gallery):
+        data = ProductRepository.get_product_by_id(productId)
+        if not data:
+            raise NotFoundError("Product not found")
+        product = ProductRepository.update_product_gallery(productId, product_gallery)
+        return product
+
+    @staticmethod
+    def update_product_name(productId, product_name):
+        data = ProductRepository.get_product_by_id(productId)
+        if not data:
+            raise NotFoundError("Product not found")
+        
+        product = ProductRepository.update_product_name(productId, product_name)
+        return product
+
+    @staticmethod
+    def update_product_price(productId, product_price):
+        data = ProductRepository.get_product_by_id(productId)
+        if not data:
+            raise NotFoundError("Product not found")
+        product = ProductRepository.update_product_price(productId, product_price)
+        return product
+
+    @staticmethod
+    def update_product_stock(productId, product_stock):
+        data = ProductRepository.get_product_by_id(productId)
+        if not data:
+            raise NotFoundError("Product not found")
+        product = ProductRepository.update_product_stock(productId, product_stock)
+        return product
+    
+    @staticmethod
+    def update_product_condition(productId, product_condition):
+        data = ProductRepository.get_product_by_id(productId)
+        if not data:
+            raise NotFoundError("Product not found")
+        product = ProductRepository.update_product_condition(productId, product_condition)
+        return product
+    
+    @staticmethod   
+    def update_product_detail(productId, product_detail):
+        data = ProductRepository.get_product_by_id(productId)
+        if not data:
+            raise NotFoundError("Product not found")
+        product = ProductRepository.update_product_detail(productId, product_detail)
+        return product
+
+    @staticmethod
+    def update_product_status(productId, status):
+        data = ProductRepository.get_product_by_id(productId)
+        if not data:
+            raise NotFoundError("Product not found")
+        product = ProductRepository.update_product_status(productId, status)
+        return product
+
+    @staticmethod
+    def delete_product(productId):
+        data = ProductRepository.get_product_by_id(productId)
+        if not data:
+            raise NotFoundError("Product not found")
+        product = ProductRepository.delete_product(productId)
         return product
