@@ -1,11 +1,24 @@
-from flask import Blueprint, request, jsonify
-from services.UserService import UserService
-from flask_jwt_extended import jwt_required
-from utils.exception import NotFoundError
-from flasgger import swag_from
 import os
 
-user_bp = Blueprint('user_bp', __name__)
+from flasgger import swag_from
+from flask import request, jsonify
+from flask_jwt_extended import jwt_required
+from flask_openapi3 import APIBlueprint, Tag
+
+from routes.form.UserForm import UserPath, CreateUserBody, UpdateUserBody, UpdateUserStatusBody, UpdateUserPasswordBody, UpdateUserIsSellerBody
+
+from config import Config
+from utils.exception import NotFoundError
+from services.UserService import UserService
+
+
+JWT = Config.JWT
+
+__version__ = "/v1"
+__bp__ = "/users"
+url_prefix = __version__ + __bp__
+tag = Tag(name="User", description="User API")
+user_bp = APIBlueprint(__bp__, __name__, url_prefix=url_prefix, abp_tags=[tag], abp_security=JWT)
 
 class UserForm:
     def __init__(self):
@@ -16,10 +29,11 @@ class UserForm:
         self.status = data.get('status')
         self.password = data.get('password')
         self.consumer_data = data.get('consumer_data')
-
-@user_bp.route('/users', methods=['POST'])
+        self.is_seller = data.get('is_seller')
+@user_bp.post("/create")
 @jwt_required()
-def api_create_users():
+@swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/CreateUser.yml'))
+def api_create_users(body: CreateUserBody):
     try:
         user_form = UserForm()
         user = UserService.create_users(
@@ -39,9 +53,8 @@ def api_create_users():
             'status': 400
         }}), 400
 
-@user_bp.route('/users', methods=['GET'])
+@user_bp.get("/all")
 @jwt_required()
-@swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/GetAllUsers.yml'))
 def api_get_all_users():
     users = UserService.get_all_users()
     return jsonify({
@@ -49,17 +62,17 @@ def api_get_all_users():
         'data': users
     }) if users else ('', 404)
 
-@user_bp.route('/users/<int:id>', methods=['GET'])
+@user_bp.get("/<int:id>")
 @jwt_required()
 @swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/GetUserById.yml'))
-def api_get_users_by_id(id):
-    users = UserService.get_users_by_id(id)
+def api_get_users_by_id(path: UserPath):
+    users = UserService.get_users_by_id(path.id)
     return jsonify({
         'status': 200,
         'data': users
     }) if users else ('', 400)
 
-@user_bp.route('/users/data', methods=['GET'])
+@user_bp.get("/data")
 @jwt_required()
 @swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/GetMyDataUser.yml'))
 def api_get_mydata_user():
@@ -69,14 +82,14 @@ def api_get_mydata_user():
         'data': users.to_dict()
     }) if users else ('', 404)
 
-@user_bp.route("/users/<int:id>", methods=["PUT"])
+@user_bp.put("/<int:id>")
 @jwt_required()
 @swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/UpdateUser.yml'))
-def api_update_users(id):
+def api_update_users(path: UserPath, body: UpdateUserBody):
     try:
         form = UserForm()
         user = UserService.update_users(
-            id,
+            path.id,
             form.name,
             form.username,
             form.email,
@@ -100,14 +113,14 @@ def api_update_users(id):
             'status': 404
         }}), 404
 
-@user_bp.route('/users/<int:id>/status', methods=['PATCH'])
+@user_bp.patch('/<int:id>/status')
 @jwt_required()
 @swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/UpdateUserStatus.yml'))
-def api_update_user_status(id):
+def api_update_user_status(path: UserPath, body: UpdateUserStatusBody):
     try:
         form = UserForm()
         user = UserService.update_users_status(
-            id,
+            path.id,
             form.status
         )
         return jsonify({
@@ -124,13 +137,13 @@ def api_update_user_status(id):
             'message': str(e)
         }}), 404
     
-@user_bp.route('/users/<int:id>/is_seller', methods=['PATCH'])
+@user_bp.patch("/<int:id>/is_seller")
 @jwt_required()
-def api_update_user_is_seller(id):
+def api_update_user_is_seller(path: UserPath, body: UpdateUserIsSellerBody):
     try:
         form = UserForm()
         user = UserService.update_users_is_seller(
-            id,
+            path.id,
             form.is_seller
         )
         return jsonify({
@@ -147,14 +160,14 @@ def api_update_user_is_seller(id):
             'message': str(e)
         }}), 404
 
-@user_bp.route('/users/<int:id>/password', methods=['PATCH'])
+@user_bp.patch("/<int:id>/password")
 @jwt_required()
 @swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/UpdateUserPassword.yml'))
-def api_update_user_password(id):
+def api_update_user_password(path: UserPath, body: UpdateUserPasswordBody):
     try:
         form = UserForm()
         user = UserService.update_users_password(
-            id,
+            path.id,
             form.password
         )
         return jsonify({
@@ -171,12 +184,12 @@ def api_update_user_password(id):
             'message': str(e)
         }}), 404
 
-@user_bp.route("/users/<int:id>", methods=["DELETE"])
+@user_bp.delete("/<int:id>")
 @jwt_required()
 @swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/DeleteUser.yml'))
-def api_delete_users(id):
+def api_delete_users(path: UserPath):
     try:
-        UserService.delete_users(id)
+        UserService.delete_users(path.id)
         return jsonify({
             'message': 'User deleted successfully',
             'status': 200,
