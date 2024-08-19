@@ -1,31 +1,32 @@
 from pydantic import BaseModel
 
 
-class CreateProductBody(BaseModel):
-    product_slug: str
+class BaseProductBody(BaseModel):
     product_photo: str
     product_gallery: object
     product_name: str
     product_price: int
+    product_price_discount: int
     product_stock: int
     product_condition: str
     product_detail: str
     status: str
+    category_id: int
+
+
+class ProductDetailResponse(BaseProductBody):
     seller_id: int
-    category_id: int
+    is_discount: bool
 
 
-class UpdateProductBody(BaseModel):
+class CreateProductBody(BaseProductBody):
+    seller_id: int
+    is_discount: bool = False
+
+
+class UpdateProductBody(BaseProductBody):
     product_slug: str
-    product_photo: str
-    product_gallery: object
-    product_name: str
-    product_price: int
-    product_stock: int
-    product_condition: str
-    product_detail: str
-    status: str
-    category_id: int
+    is_discount: bool = False
 
 
 class UpdateProductCategoryIdBody(BaseModel):

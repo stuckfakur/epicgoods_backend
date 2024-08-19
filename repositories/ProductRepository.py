@@ -1,36 +1,46 @@
 from sqlalchemy.exc import DataError
 from models.Product import Product, db
+import re
+from unidecode import unidecode
 
 
 class ProductRepository:
     @staticmethod
     def api_create_products(
-            product_slug,
             product_photo,
             product_gallery,
             product_name,
             product_price,
+            product_price_discount,
             product_stock,
             product_condition,
             product_detail,
+            is_discount,
             status,
             seller_id,
             category_id
 
     ):
         new_product = Product(
-            product_slug=product_slug,
             product_photo=product_photo,
             product_gallery=product_gallery,
             product_name=product_name,
             product_price=product_price,
+            product_price_discount=product_price_discount,
             product_stock=product_stock,
             product_condition=product_condition,
             product_detail=product_detail,
+            is_discount=is_discount,
             status=status,
             seller_id=seller_id,
             category_id=category_id
         )
+        # Konversi product_name menjadi slug
+        slug = unidecode(product_name)  # Menghapus aksen pada karakter
+        slug = re.sub(r'[^\w\s]', '', slug)  # Menghapus semua simbol kecuali huruf, angka, dan spasi
+        slug = re.sub(r'\s+', '_', slug)  # Mengganti spasi dengan underscore
+        new_product.product_slug = slug.lower()  # Mengubah ke lowercase
+
         db.session.add(new_product)
         db.session.commit()
         return new_product
@@ -58,9 +68,11 @@ class ProductRepository:
             product_gallery,
             product_name,
             product_price,
+            product_price_discount,
             product_stock,
             product_condition,
             product_detail,
+            is_discount,
             status,
             category_id
     ):
@@ -73,12 +85,14 @@ class ProductRepository:
             data.product_gallery = product_gallery
             data.product_name = product_name
             data.product_price = product_price
+            data.product_price_discount = product_price_discount
             data.product_stock = product_stock
             data.product_condition = product_condition
             data.product_detail = product_detail
+            data.is_discount = is_discount
             data.status = status
             data.category_id = category_id
-            
+
             data.updated_at = db.func.now()
 
             db.session.commit()

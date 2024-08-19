@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask_jwt_extended import jwt_required
 from flask_openapi3 import APIBlueprint, Tag
 
-from routes.form.ProductForm import ProductPath, CreateProductBody, UpdateProductBody, UpdateProductNameBody, UpdateProductSlugBody, UpdateProductCategoryIdBody, UpdateProductPhotoBody, UpdateProductGalleryBody, UpdateProductPriceBody, UpdateProductStockBody, UpdateProductConditionBody, UpdateProductDetailBody, UpdateProductStatusBody
+from routes.form.ProductForm import *
 
 from config import Config
 from utils.exception import NotFoundError
@@ -25,9 +25,11 @@ class ProductForm:
         self.product_gallery = data.get('product_gallery')
         self.product_name = data.get('product_name')
         self.product_price = data.get('product_price')
+        self.product_price_discount = data.get('product_price_discount')
         self.product_stock = data.get('product_stock')
         self.product_condition = data.get('product_condition')
         self.product_detail = data.get('product_detail')
+        self.is_discount = data.get('is_discount')
         self.status = data.get('status')
         self.seller_id = data.get('seller_id')
         self.category_id = data.get('category_id')
@@ -38,14 +40,15 @@ def api_create_products(body: CreateProductBody):
     try:
         form = ProductForm()
         product = ProductService.create_products(
-            form.product_slug,
             form.product_photo,
             form.product_gallery,
             form.product_name,
             form.product_price,
+            form.product_price_discount,
             form.product_stock,
             form.product_condition,
             form.product_detail,
+            form.is_discount,
             form.status,
             form.seller_id,
             form.category_id
@@ -62,7 +65,7 @@ def api_create_products(body: CreateProductBody):
         }), 400
 
 @product_bp.get('/all')
-def api_get_all_products():
+def api_get_all_products(response: ProductDetailResponse):
     sort = request.args.get('sort')
     order = request.args.get('order', 'asc')
 
@@ -99,9 +102,11 @@ def api_update_product_by_id(path: ProductPath, body: UpdateProductBody):
             form.product_gallery,
             form.product_name, 
             form.product_price, 
-            form.product_stock, 
+            form.product_price_discount,
+            form.product_stock,
             form.product_condition, 
-            form.product_detail, 
+            form.product_detail,
+            form.is_discount,
             form.status,
             form.category_id
         )

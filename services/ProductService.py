@@ -6,7 +6,6 @@ import re
 class Validator:
     @staticmethod
     def product_validator(
-        product_slug, 
         product_photo,
         product_gallery,
         product_name, 
@@ -15,8 +14,6 @@ class Validator:
         product_condition, 
         product_detail
     ):
-        if not product_slug or not isinstance(product_slug, str):
-            raise ValueError("Product slug is required")
         if not product_photo or not isinstance(product_photo, str):
             raise ValueError("Product photo is required")
         if not product_gallery or not isinstance(product_gallery, str):
@@ -60,21 +57,21 @@ class Validator:
 class ProductService:
     @staticmethod
     def create_products(
-        product_slug,
         product_photo,
         product_gallery,
         product_name,
         product_price,
+        product_price_discount,
         product_stock,
         product_condition,
         product_detail,
+        is_discount,
         status,
         seller_id,
         category_id
 
     ):
         Validator.product_validator(
-            product_slug,
             product_photo,
             product_gallery,
             product_name,
@@ -88,14 +85,15 @@ class ProductService:
         Validator.seller_validator(seller_id)
         Validator.not_negative_price(product_price)
         product = ProductRepository.api_create_products(
-            product_slug,
             product_photo,
             product_gallery,
             product_name,
             product_price,
+            product_price_discount,
             product_stock,
             product_condition,
             product_detail,
+            is_discount,
             status,
             seller_id,
             category_id
@@ -117,19 +115,20 @@ class ProductService:
     @staticmethod
     def update_product(
         productId,
-        product_slug, 
-        product_photo, 
+        product_slug,
+        product_photo,
         product_gallery,
         product_name, 
         product_price, 
-        product_stock, 
-        product_condition, 
-        product_detail, 
+        product_price_discount,
+        product_stock,
+        product_condition,
+        product_detail,
+        is_discount,
         status,
         category_id
     ):
         Validator.product_validator(
-            product_slug,
             product_photo,
             product_gallery,
             product_name, 
@@ -152,9 +151,11 @@ class ProductService:
                 product_gallery,
                 product_name,
                 product_price,
+                product_price_discount,
                 product_stock,
                 product_condition,
                 product_detail,
+                is_discount,
                 status,
                 category_id
             )
