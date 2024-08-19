@@ -13,11 +13,12 @@ class Validator:
 
 class CategoryService:
     @staticmethod
-    def create_category(category_slug: object, category_name: object, description: object) -> object:
+    def create_category(category_slug: object, category_name: object,category_photo:object, description: object) -> object:
         Validator.category_validator(category_slug, category_name, description)
         category = CategoryRepository.create_category(
             category_slug,
             category_name,
+            category_photo,
             description
         )
         return category
@@ -35,7 +36,7 @@ class CategoryService:
         return category.to_dict()
     
     @staticmethod
-    def update_category(id: object, category_slug: object, category_name: object, description: object) -> object:
+    def update_category(id: object, category_slug: object, category_name: object, category_photo: object, description: object) -> object:
         Validator.category_validator(category_slug, category_name, description)
         category = CategoryRepository.get_category_by_id(id)
         if not category:
@@ -45,6 +46,7 @@ class CategoryService:
                 id,
                 category_slug,
                 category_name,
+                category_photo,
                 description
             )
             return category

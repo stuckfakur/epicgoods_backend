@@ -4,7 +4,8 @@ from flask import request, jsonify
 from flask_jwt_extended import jwt_required
 from flask_openapi3 import APIBlueprint, Tag
 
-from routes.form.CategoryForm import CategoryPath, CreateBody, UpdateBody, UpdateCategorySlugBody, UpdateCategoryNameBody, UpdateCategoryDescriptionBody
+from routes.form.CategoryForm import CategoryPath, CreateBody, UpdateBody, UpdateCategorySlugBody, \
+    UpdateCategoryNameBody, UpdateCategoryDescriptionBody, CategoryDetailResponse
 
 from config import Config
 from services.CategoryService import CategoryService
@@ -24,6 +25,7 @@ class CategoryForm:
         data = request.get_json()
         self.category_slug = data.get('category_slug')
         self.category_name = data.get('category_name')
+        self.category_photo = data.get('category_photo')
         self.description = data.get('description')
 
 
@@ -35,6 +37,7 @@ def api_create_category(body: CreateBody):
         category = CategoryService.create_category(
             form.category_slug,
             form.category_name,
+            form.category_photo,
             form.description
         )
         return jsonify({
@@ -84,7 +87,8 @@ def api_get_category_by_id(path: CategoryPath):
 def api_update_category(path: CategoryPath, body: UpdateBody):
     try:
         form = CategoryForm()
-        category_updated = CategoryService.update_category(id, form.category_slug, form.category_name, form.description)
+        category_updated = CategoryService.update_category(
+            path.id, form.category_slug, form.category_name, form.category_photo, form.description)
         return jsonify({
             'message': 'Category updated successfully',
             'status': 200,

@@ -5,11 +5,13 @@ class CategoryRepository:
     def create_category(
         category_slug,
         category_name,
+        category_photo,
         description
     ):
        new_category = Category(
            category_slug = category_slug,
            category_name = category_name,
+           category_photo = category_photo,
            description = description
        )
        db.session.add(new_category)
@@ -36,6 +38,7 @@ class CategoryRepository:
             id, 
             category_slug,
             category_name,
+            category_photo,
             description,
     ):
         try:
@@ -45,6 +48,7 @@ class CategoryRepository:
 
             data.category_name = category_name
             data.category_slug = category_slug
+            data.category_photo = category_photo
             data.description = description
             data.updated_at = db.func.now()
 
