@@ -76,7 +76,15 @@ class SellerService:
             return "Seller not Found"
     
     @staticmethod
-    def update_seller(sellerId, location_id, address, store_name, store_type, store_info, description):
+    def update_seller(
+        sellerId, 
+        location_id, 
+        address, 
+        store_name, 
+        store_type, 
+        store_info, 
+        description
+    ):
         Validator.seller_validator(store_name, store_info, description)
         Validator.extra_validator(location_id, address)
         Validator.existing_store_name(store_name)
