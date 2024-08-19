@@ -1,8 +1,20 @@
-from flask import Blueprint, request, jsonify
-from services.LocationService import LocationService
-from utils.exception import NotFoundError
+from flask import request, jsonify
+from flask_jwt_extended import jwt_required
+from flask_openapi3 import APIBlueprint, Tag
 
-location_bp = Blueprint('location_bp', __name__)
+from routes.form.LocationForm import CreateLocationBody,LocationPath, UpdateLocationBody,UpdateLocationNameBody, UpdateLocationDescriptionBody
+
+from config import Config
+from utils.exception import NotFoundError
+from services.LocationService import LocationService    
+
+JWT = Config.JWT
+
+__version__ = "/v1"
+__bp__ = "/locations"
+url_prefix = __version__ + __bp__
+tag = Tag(name="Location", description="Location API")
+location_bp = APIBlueprint(__bp__, __name__, url_prefix=url_prefix, abp_tags=[tag], abp_security=JWT)
 
 
 class LocationForm:
@@ -11,8 +23,9 @@ class LocationForm:
         self.location_name = data.get('location_name')
         self.description = data.get('description')
 
-@location_bp.route('/locations', methods=['POST'])
-def api_create_location():
+@location_bp.post('/create')
+@jwt_required()
+def api_create_location(body: CreateLocationBody):
     try:
         form = LocationForm()
         location = LocationService.create_location(
@@ -29,7 +42,8 @@ def api_create_location():
             'status': 400
         }}), 400
 
-@location_bp.route('/locations', methods=['GET'])
+@location_bp.get('/all')
+@jwt_required()
 def api_get_all_location():
     location = LocationService.get_all_location()
     return jsonify({
@@ -37,20 +51,22 @@ def api_get_all_location():
         'data': location
     }) if location else ('', 404)
 
-@location_bp.route('/locations/<int:id>', methods=['GET'])
-def api_get_location_by_id(id):
-    location = LocationService.get_location_by_id(id)
+@location_bp.get('/<int:id>')
+@jwt_required()
+def api_get_location_by_id(path: LocationPath):
+    location = LocationService.get_location_by_id(path.id)
     return jsonify({
         'status': 200,
         'data': location
     }) if location else ('', 404)
 
-@location_bp.route("/locations/<int:id>", methods=["PUT"])
-def api_update_location(id):
+@location_bp.put('/<int:id>')
+@jwt_required()
+def api_update_location(path: LocationPath, body: UpdateLocationBody):
     try:
         form = LocationForm()
         location = LocationService.update_location(
-            id,
+            path.id,
             form.location_name,
             form.description,
         )
@@ -70,12 +86,13 @@ def api_update_location(id):
             'status': 404
         }}), 404
 
-@location_bp.route('/locations/<int:id>/location_name', methods=['PATCH'])
-def api_update_location_name(id):
+@location_bp.patch('/<int:id>/location_name')
+@jwt_required()
+def api_update_location_name(path: LocationPath, body: UpdateLocationNameBody):
     try:
         form = LocationForm()
         location = LocationService.update_location_name(
-            id,
+            path.id,
             form.location_name
         )
         return jsonify({
@@ -92,12 +109,13 @@ def api_update_location_name(id):
             'message': str(e)
         }}), 404
 
-@location_bp.route('/locations/<int:id>/description', methods=['PATCH'])
-def api_update_description(id):
+@location_bp.patch('/<int:id>/description')
+@jwt_required()
+def api_update_description(path: LocationPath, body: UpdateLocationDescriptionBody):
     try:
         form = LocationForm()
         location = LocationService.update_description(
-            id,
+            path.id,
             form.description
         )
         return jsonify({
@@ -114,10 +132,11 @@ def api_update_description(id):
             'message': str(e)
         }}), 404
 
-@location_bp.route("/locations/<int:id>", methods=["DELETE"])
-def api_delete_location(id):
+@location_bp.delete('/<int:id>')
+@jwt_required()
+def api_delete_location(path: LocationPath):
     try:
-        LocationService.delete_location(id)
+        LocationService.delete_location(path.id)
         return jsonify({
             'message': 'Location deleted successfully',
             'status': 200,
