@@ -26,9 +26,9 @@ class Validator:
         if not product_detail or not isinstance(product_detail, str):
             raise ValueError("Product detail is required")
         
-        regex_product_name = '^[a-zA-Z0-9]*$'
-        if not re.match(regex_product_name, product_name):
-            raise ValueError("Product name cannot contain special characters")
+        # regex_product_name = '^[a-zA-Z0-9]*$'
+        # if not re.match(regex_product_name, product_name):
+            # raise ValueError("Product name cannot contain special characters")
 
     @staticmethod
     def extra_validator(category_id):
@@ -55,12 +55,13 @@ class ProductService:
     def create_products(
         product_slug,
         product_photo,
-        product_gellery,
+        product_gallery,
         product_name,
         product_price,
         product_stock,
         product_condition,
         product_detail,
+        status,
         seller_id,
         category_id
 
@@ -79,12 +80,13 @@ class ProductService:
         product = ProductRepository.api_create_products(
             product_slug,
             product_photo,
-            product_gellery,
+            product_gallery,
             product_name,
             product_price,
             product_stock,
             product_condition,
             product_detail,
+            status,
             seller_id,
             category_id
         )
@@ -107,7 +109,7 @@ class ProductService:
         id, 
         product_slug, 
         product_photo, 
-        product_gellery, 
+        product_gallery,
         product_name, 
         product_price, 
         product_stock, 
@@ -137,7 +139,7 @@ class ProductService:
                 id, 
                 product_slug, 
                 product_photo, 
-                product_gellery, 
+                product_gallery,
                 product_name, 
                 product_price, 
                 product_stock, 

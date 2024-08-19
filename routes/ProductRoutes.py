@@ -22,7 +22,7 @@ class ProductForm:
         data = request.get_json()
         self.product_slug = data.get('product_slug')
         self.product_photo = data.get('product_photo')
-        self.product_gellery = data.get('product_gellery')
+        self.product_gallery = data.get('product_gallery')
         self.product_name = data.get('product_name')
         self.product_price = data.get('product_price')
         self.product_stock = data.get('product_stock')
@@ -40,7 +40,7 @@ def api_create_products(body: CreateProductBody):
         product = ProductService.create_products(
             form.product_slug,
             form.product_photo,
-            form.product_gellery,
+            form.product_gallery,
             form.product_name,
             form.product_price,
             form.product_stock,
@@ -96,7 +96,7 @@ def api_update_product_by_id(path: ProductPath, body: UpdateProductBody):
             path.id,
             form.product_slug, 
             form.product_photo, 
-            form.product_gellery, 
+            form.product_gallery,
             form.product_name, 
             form.product_price, 
             form.product_stock, 

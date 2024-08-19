@@ -7,7 +7,7 @@ class Product( db.Model):
     category_id = db.Column(db.ForeignKey('categories.id'))
     product_slug = db.Column(db.String(80), unique=True, nullable=False)
     product_photo = db.Column(db.String(80))
-    product_gellery = db.Column(db.Text)
+    product_gallery = db.Column(db.Text)
     product_name = db.Column(db.String(80))
     product_price = db.Column(db.Integer)
     product_stock = db.Column(db.Integer)
@@ -25,7 +25,7 @@ class Product( db.Model):
             'id' : self.id,
             'product_slug' : self.product_slug,
             'product_photo' : self.product_photo,
-            'product_gellery' : self.product_gellery,
+            'product_gallery' : self.product_gallery,
             'product_name' : self.product_name,
             'product_price' : self.product_price,
             'product_stock' : self.product_stock,
