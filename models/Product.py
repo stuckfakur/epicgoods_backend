@@ -1,7 +1,6 @@
 from . import db
-from flask_login import UserMixin
 
-class Product(UserMixin, db.Model):
+class Product( db.Model):
     __tablename__ = 'products'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.ForeignKey('users.id'))

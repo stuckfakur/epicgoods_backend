@@ -12,14 +12,22 @@ from models.User import TokenBlacklist
 from routes.AuthRoutes import auth_bp
 from routes.CategoryRoutes import category_bp
 from routes.FollowerRoutes import follower_bp
-from routes.LocationRoute import location_bp
+from routes.LocationRoutes import location_bp
 from routes.ProductRoutes import product_bp
-from routes.SellerRoute import seller_bp
-from routes.UserRoute import user_bp
+from routes.SellerRoutes import seller_bp
+from routes.UserRoutes import user_bp
+from routes.TransactionRoutes import transaction_bp
+from routes.VoucherRoutes import voucher_bp
 from utils.check_db import connection_check
 
 info = Info(title="test API", version="1.0.0")
-app = OpenAPI(__name__, info=info)
+jwt = {
+    "type": "http",
+    "scheme": "bearer",
+    "bearerFormat": "JWT"
+}
+securityschemes = {"jwt": jwt}
+app = OpenAPI(__name__, info=info, security_schemes=securityschemes)
 
 test_tag = Tag(name="test", description="Some Test")
 
@@ -37,14 +45,23 @@ migrate = Migrate(app, db)
 
 jwt = JWTManager(app)
 
-app.register_blueprint(user_bp, url_prefix='/api')
-app.register_blueprint(seller_bp, url_prefix='/api')
+# app.register_blueprint(user_bp, url_prefix='/api')
+# app.register_blueprint(seller_bp, url_prefix='/api')
 app.register_blueprint(location_bp, url_prefix='/api')
 # app.register_blueprint(category_bp, url_prefix='/api')
 app.register_blueprint(product_bp, url_prefix='/api')
 app.register_blueprint(follower_bp, url_prefix='/api')
+app.register_blueprint(transaction_bp, url_prefix='/api')
+app.register_blueprint(voucher_bp, url_prefix='/api')
 # app.register_blueprint(auth_bp, url_prefix='/auth')
 
+app.register_api(user_bp)
+app.register_api(seller_bp)
+# app.register_api(location_bp)
+# app.register_api(product_bp)
+# app.register_api(follower_bp)
+# app.register_api(transaction_bp)
+# app.register_api(voucher_bp)
 app.register_api(auth_bp)
 app.register_api(category_bp)
 
