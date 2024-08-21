@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask_jwt_extended import jwt_required
 from flask_openapi3 import APIBlueprint, Tag
 
-from routes.form.VoucherForm import VoucherPath, CreateVoucherBody, UpdateVoucherBody, UpdateVoucherName, UpdateVoucherCode, UpdateVoucherType, UpdateVoucherValue, UpdateVoucherQuota
+from routes.form.VoucherForm import *
 
 from config import Config
 from utils.exception import NotFoundError
@@ -27,7 +27,7 @@ class VoucherForm:
 
 @voucher_bp.post('/create')
 @jwt_required()
-def api_create_voucher(body: CreateVoucherBody):
+def api_create_voucher(body: BaseVoucherBody):
     try:
         form = VoucherForm()
         voucher = VoucherService.create_voucher(
