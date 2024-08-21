@@ -14,10 +14,6 @@ class Validator:
             raise NotFoundError("Voucher value is required")
         if not voucher_quota or not isinstance(voucher_quota, int):
             raise NotFoundError("Voucher quota is required")
-        
-        regex_voucher_code = '^[A-Za-z0-9]+$'
-        if not re.match(regex_voucher_code,  voucher_code):
-            raise NotFoundError("Voucher code is invalid")
     
     @staticmethod
     def voucher_type_validator(voucher_type):

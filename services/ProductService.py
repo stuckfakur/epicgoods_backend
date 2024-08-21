@@ -69,7 +69,6 @@ class ProductService:
         status,
         seller_id,
         category_id
-
     ):
         Validator.product_validator(
             product_photo,

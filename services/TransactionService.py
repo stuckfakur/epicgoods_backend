@@ -3,15 +3,15 @@ import re
 
 class Validator:
     @staticmethod
-    def transaction_validator(stock, price):
-        if stock < 0:
+    def transaction_validator(quantity, total_price):
+        if quantity < 0:
             raise ValueError("Stock cannot be negative")
-        if price < 0:
+        if total_price < 0:
             raise ValueError("Price cannot be negative")
-        if not isinstance(stock, int):
+        if not isinstance(quantity, int):
             raise ValueError("Stock must be an integer")
-        if not isinstance(price, int):
-            raise ValueError("Price must be a integer")
+        if not isinstance(total_price, int):
+            raise ValueError("total_price must be a integer")
     @staticmethod
     def paid_status_validator(paid_status):
         if not paid_status or not isinstance(paid_status, str):
@@ -35,11 +35,11 @@ class TransactionService:
         user_id, 
         product_id, 
         voucher_id, 
-        stock, 
-        price, 
+        quantity, 
+        total_price, 
         paid_status
     ):
-        Validator.transaction_validator(stock, price)
+        Validator.transaction_validator(quantity, total_price)
         Validator.paid_status_validator(paid_status)
         Validator.user_id_validator(user_id)
         Validator.product_id_validator(product_id)
@@ -48,8 +48,8 @@ class TransactionService:
             user_id, 
             product_id, 
             voucher_id, 
-            stock, 
-            price, 
+            quantity, 
+            total_price, 
             paid_status
         )
         return transaction

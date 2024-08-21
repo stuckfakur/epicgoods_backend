@@ -6,17 +6,18 @@ class TransactionRepository:
         user_id, 
         product_id, 
         voucher_id, 
-        stock, price, 
+        quantity,
+        total_price, 
         paid_status
     ):
-        transaction = Transaction(
-            user_id, 
-            product_id, 
-            voucher_id, 
-            stock, 
-            price, 
-            paid_status
+        new_transaction = Transaction(
+            user_id = user_id,
+            product_id = product_id, 
+            voucher_id = voucher_id, 
+            quantity = quantity, 
+            total_price = total_price, 
+            paid_status = paid_status
         )
-        db.session.add(transaction)
+        db.session.add(new_transaction)
         db.session.commit()
-        return transaction
+        return new_transaction
