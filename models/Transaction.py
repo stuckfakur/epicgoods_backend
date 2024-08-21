@@ -6,8 +6,8 @@ class Transaction(db.Model):
     user_id = db.Column(db.ForeignKey('users.id'))
     product_id = db.Column(db.ForeignKey('products.id'))
     voucher_id = db.Column(db.ForeignKey('vouchers.id'), nullable=True)
-    stock = db.Column(db.Integer)
-    price = db.Column(db.Integer)
+    quantity = db.Column(db.Integer)
+    total_price = db.Column(db.Integer)
     paid_status = db.Column(db.String(2))
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
@@ -21,8 +21,8 @@ class Transaction(db.Model):
             'user_id' : self.user_id,
             'product_id' : self.product_id,
             'voucher_id' : self.voucher_id,
-            'stock' : self.stock,
-            'price' : self.price,
+            'quantity' : self.quantity,
+            'total_price' : self.total_price,
             'paid_status' : self.paid_status,
             'user' : {
                 'id' : self.user.id,
@@ -30,9 +30,9 @@ class Transaction(db.Model):
             },
             'product' : {
                 'id' : self.product.id,
-                'name' : self.product.name,
-                'price' : self.product.price,
-                'stock' : self.product.stock,
+                'product_name' : self.product.product_name,
+                'product_price' : self.product.product_price,
+                'product_stock' : self.product.product_stock,
             },
             'voucher' : {
                 'id' : self.voucher.id,
