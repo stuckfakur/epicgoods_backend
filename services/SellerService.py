@@ -68,8 +68,8 @@ class SellerService:
         return [seller.to_dict() for seller in seller]
     
     @staticmethod
-    def get_seller_by_id(id):
-        seller = SellerRepository.get_seller_by_id(id)
+    def get_seller_by_id(sellerId):
+        seller = SellerRepository.get_seller_by_id(sellerId)
         if seller:
             return seller.to_dict()
         else:
@@ -77,7 +77,7 @@ class SellerService:
     
     @staticmethod
     def update_seller(
-        sellerId, 
+        sellerId,
         location_id, 
         address, 
         store_name, 

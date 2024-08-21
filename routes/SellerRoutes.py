@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask_jwt_extended import jwt_required
 from flask_openapi3 import APIBlueprint, Tag
 
-from routes.form.SellerForm import CreateSellerBody, UpdateSellerBody, SellerPath, UpdateSellerLocationIdBody, UpdateSellerAddressBody, UpdateSellerStoreNameBody, UpdateSellerStoreInfoBody, UpdateSellerDescriptionBody, UpdateSellerStoreTypeBody
+from routes.form.SellerForm import *
 
 from config import Config
 from utils.exception import NotFoundError
@@ -108,7 +108,7 @@ def api_update_seller_location_id(path: SellerPath, body: UpdateSellerLocationId
             form.location_id
         )
         return jsonify({
-            'message': 'seller location_id updated successfully',
+            'message': 'location_id updated successfully',
             'status': 201,
             'data': seller.to_dict()
         }), 201

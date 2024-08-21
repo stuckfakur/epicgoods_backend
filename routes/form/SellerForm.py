@@ -34,4 +34,4 @@ class UpdateSellerDescriptionBody(BaseModel):
     description: str
 
 class SellerPath(BaseModel):
-    id: int
+    id: int 

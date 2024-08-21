@@ -59,7 +59,7 @@ class SellerRepository:
         try:
             data = Seller.query.get(id)
             if not data:
-                return None  # Seller not found
+                return None
 
             # Update the seller fields
             data.location_id = location_id
@@ -86,7 +86,6 @@ class SellerRepository:
 
     @staticmethod
     def update_seller_location_id(sellerId, location_id):
-        seller = Seller.query.get(sellerId)
         try:
             seller = Seller.query.get(sellerId)
             if not seller:
