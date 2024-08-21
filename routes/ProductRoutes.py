@@ -65,7 +65,7 @@ def api_create_products(body: CreateProductBody):
         }), 400
 
 @product_bp.get('/all')
-def api_get_all_products(response: ProductDetailResponse):
+def api_get_all_products():
     sort = request.args.get('sort')
     order = request.args.get('order', 'asc')
 
