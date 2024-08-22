@@ -200,3 +200,7 @@ def api_delete_users(path: UserPath):
             'status': 404
         }}), 404
 
+# TODO make GET id user for get all cart
+@user_bp.get("/<int:id>/cart")
+@jwt_required()
+def api_get_user_cart(path: UserPath):
