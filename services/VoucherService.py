@@ -1,61 +1,63 @@
-from utils.exception import NotFoundError
 from sqlalchemy.exc import DataError
+
 from repositories.VoucherRepository import VoucherRepository
-import re
+from utils.exception import NotFoundError
+
 
 class Validator:
     @staticmethod
     def voucher_validator(voucher_name, voucher_code, voucher_value, voucher_quota):
         if not voucher_name or not isinstance(voucher_name, str):
-            raise NotFoundError("Voucher name is required")
+            raise ValueError("Voucher name is required")
         if not voucher_code or not isinstance(voucher_code, str):
-            raise NotFoundError("Voucher code is required")
+            raise ValueError("Voucher code is required")
         if not voucher_value or not isinstance(voucher_value, int):
-            raise NotFoundError("Voucher value is required")
+            raise ValueError("Voucher value is required")
         if not voucher_quota or not isinstance(voucher_quota, int):
-            raise NotFoundError("Voucher quota is required")
-    
+            raise ValueError("Voucher quota is required")
+
+    # type only percentage or amount
     @staticmethod
     def voucher_type_validator(voucher_type):
-        if not voucher_type or not isinstance(voucher_type, str):
-            raise NotFoundError("Voucher type is required")
+        if voucher_type not in ['percentage', 'amount']:
+            raise ValueError("Voucher type is required")
 
     @staticmethod
     def exist_voucher(voucher_code):
         if VoucherRepository.existing_voucher_code(voucher_code):
             raise ValueError("Voucher code already exists")
-        
+
+
 class VoucherService:
     @staticmethod
     def create_voucher(
-        voucher_name, 
-        voucher_code, 
-        voucher_type, 
-        voucher_value, 
-        voucher_quota
+            voucher_name,
+            voucher_code,
+            voucher_type,
+            voucher_value,
+            voucher_quota
     ):
         Validator.voucher_validator(
-            voucher_name, 
-            voucher_code, 
-            voucher_value, 
+            voucher_name,
+            voucher_code,
+            voucher_value,
             voucher_quota
         )
         Validator.voucher_type_validator(voucher_type)
         Validator.exist_voucher(voucher_code)
-        voucher = VoucherRepository.create_voucher(
-            voucher_name, 
-            voucher_code, 
-            voucher_type, 
-            voucher_value, 
+        return VoucherRepository.create_voucher(
+            voucher_name,
+            voucher_code,
+            voucher_type,
+            voucher_value,
             voucher_quota
         )
-        return voucher
-    
+
     @staticmethod
     def get_all_voucher(sort=None, order='asc'):
         voucher = VoucherRepository.get_all_voucher(sort, order)
         return [voucher.to_dict() for voucher in voucher]
-    
+
     @staticmethod
     def get_voucher_by_id(id):
         voucher = VoucherRepository.get_voucher_by_id(id)
@@ -66,17 +68,17 @@ class VoucherService:
 
     @staticmethod
     def update_voucher(
-        voucherId,
-        voucher_name,
-        voucher_code,
-        voucher_type,
-        voucher_value, 
-        voucher_quota
+            voucherId,
+            voucher_name,
+            voucher_code,
+            voucher_type,
+            voucher_value,
+            voucher_quota
     ):
         Validator.voucher_validator(
-            voucher_name, 
-            voucher_code, 
-            voucher_value, 
+            voucher_name,
+            voucher_code,
+            voucher_value,
             voucher_quota
         )
         Validator.voucher_type_validator(voucher_type)
@@ -90,7 +92,7 @@ class VoucherService:
                 voucher_name,
                 voucher_code,
                 voucher_type,
-                voucher_value, 
+                voucher_value,
                 voucher_quota
             )
             return voucher.to_dict()
@@ -98,4 +100,3 @@ class VoucherService:
             raise ValueError(f"Database error occurred: {str(e)}")
         except Exception as e:
             raise e
-
