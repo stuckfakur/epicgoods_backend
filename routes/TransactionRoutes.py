@@ -26,7 +26,7 @@ class TransactionForm:
 
 @transaction_bp.post('/create')
 @jwt_required()
-def api_create_transaction(body: BaseTransactionBody):
+def api_create_transaction(body: CreateTransactionBody):
     try:
         form = TransactionForm()
 

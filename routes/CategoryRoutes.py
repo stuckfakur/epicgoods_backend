@@ -17,7 +17,7 @@ __version__ = "/v1"
 __bp__ = "/categories"
 url_prefix = __version__ + __bp__
 tag = Tag(name="Category", description="Category API")
-category_bp = APIBlueprint(__bp__, __name__, url_prefix=url_prefix, abp_tags=[tag], abp_security=JWT)
+category_bp = APIBlueprint(__bp__, __name__, url_prefix=url_prefix, abp_tags=[tag])
 
 
 class CategoryForm:
