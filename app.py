@@ -13,11 +13,11 @@ from routes.AuthRoutes import auth_bp
 from routes.CategoryRoutes import category_bp
 from routes.FollowerRoutes import follower_bp
 from routes.LocationRoutes import location_bp
-from routes.ProductRoutes import product_bp
 from routes.ProductCartRoutes import product_cart_bp
+from routes.ProductRoutes import product_bp
 from routes.SellerRoutes import seller_bp
-from routes.UserRoutes import user_bp
 from routes.TransactionRoutes import transaction_bp
+from routes.UserRoutes import user_bp
 from routes.VoucherRoutes import voucher_bp
 from utils.check_db import connection_check
 
@@ -75,6 +75,7 @@ connection_check()
 #     app,
 #     supports_credentials=True,
 #     origins=[
+
 #         'http://localhost:3000', 'http://127.0.0.1:3000',
 #     ],
 #     allow_headers=['Content-Type', 'Authorization'],
