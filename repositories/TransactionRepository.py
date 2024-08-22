@@ -7,8 +7,8 @@ class TransactionRepository:
     def create_transaction(
             user_id,
             product_id,
-            voucher_id,
             quantity,
+            voucher_id
     ):
         new_transaction = Transaction(
             user_id=user_id,
