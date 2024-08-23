@@ -92,6 +92,11 @@ def api_update_sellers(path: SellerPath, body: UpdateSellerBody):
             'status': 201,
             'data': seller
         }), 200
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
     except ValueError as e:
         return jsonify({'error': {
             'message': str(e),
