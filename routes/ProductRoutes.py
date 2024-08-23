@@ -85,9 +85,14 @@ def api_get_product_by_id(path: ProductPath):
             'data': product
         }) if product else ('', 404)
 
-    except NotFoundError as e:
+    except ValueError as e:
         return jsonify({'error': {
             'message': str(e)
+        }}), 404
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
         }}), 404
 
 @product_bp.put('/<int:id>')
@@ -115,11 +120,16 @@ def api_update_product_by_id(path: ProductPath, body: UpdateProductBody):
             'status': 200,
             'data': product
         }), 200
-    except NotFoundError as e:
+    except ValueError as e:
         return jsonify({'error': {
             'message': str(e),
             'status': 404
             }}), 404
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
     
 @product_bp.patch('/<int:id>/category_id')
 @jwt_required()
@@ -135,11 +145,16 @@ def api_update_product_category_id(path: ProductPath, body: UpdateProductCategor
             'status': 200,
             'data': product
         }), 200
-    except NotFoundError as e:
+    except ValueError as e:
         return jsonify({'error': {
             'message': str(e),
             'status': 404
             }}), 404
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
     
 @product_bp.patch('/<int:id>/product_slug')
 @jwt_required()
@@ -155,11 +170,16 @@ def api_update_product_slug(path: ProductPath, body: UpdateProductSlugBody):
             'status': 200,
             'data': product
         }), 200
-    except NotFoundError as e:
+    except ValueError as e:
         return jsonify({'error': {
             'message': str(e),
             'status': 404
             }}), 404
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
     
 @product_bp.patch('/<int:id>/product_photo')
 @jwt_required()
@@ -175,11 +195,16 @@ def api_update_product_photo(path: ProductPath, body: UpdateProductPhotoBody):
             'status': 200,
             'data': product
         }), 200
-    except NotFoundError as e:
+    except ValueError as e:
         return jsonify({'error': {
             'message': str(e),
             'status': 404
             }}), 404
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
     
 @product_bp.patch('/<int:id>/product_gallery')
 @jwt_required()
@@ -195,11 +220,16 @@ def api_update_product_gallery(path: ProductPath, body: UpdateProductGalleryBody
             'status': 200,
             'data': product
         }), 200
-    except NotFoundError as e:
+    except ValueError as e:
         return jsonify({'error': {
             'message': str(e),
             'status': 404
             }}), 404
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
 
 @product_bp.patch('/<int:id>/product_name')
 @jwt_required()
@@ -215,11 +245,16 @@ def api_update_product_name(path: ProductPath, body: UpdateProductNameBody):
             'status': 200,
             'data': product
         }), 200
-    except NotFoundError as e:
+    except ValueError as e:
         return jsonify({'error': {
             'message': str(e),
             'status': 404
             }}), 404
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
     
 @product_bp.patch('/<int:id>/product_price')
 @jwt_required()
@@ -235,11 +270,16 @@ def api_update_product_price(path: ProductPath, body: UpdateProductPriceBody):
             'status': 200,
             'data': product
         }), 200
-    except NotFoundError as e:
+    except ValueError as e:
         return jsonify({'error': {
             'message': str(e),
             'status': 404
             }}), 404
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
 
 @product_bp.patch('/<int:id>/product_stock')
 @jwt_required()
@@ -255,11 +295,16 @@ def api_update_product_stock(path: ProductPath, body: UpdateProductStockBody):
             'status': 200,
             'data': product
         }), 200
-    except NotFoundError as e:
+    except ValueError as e:
         return jsonify({'error': {
             'message': str(e),
             'status': 404
             }}), 404
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
 
 @product_bp.patch('/<int:id>/product_condition')
 @jwt_required()
@@ -275,11 +320,16 @@ def api_update_product_condition(path: ProductPath, body: UpdateProductCondition
             'status': 200,
             'data': product
         }), 200
-    except NotFoundError as e:
+    except ValueError as e:
         return jsonify({'error': {
             'message': str(e),
             'status': 404
             }}), 404
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
 
 @product_bp.patch('/<int:id>/product_detail')
 @jwt_required()
@@ -295,11 +345,16 @@ def api_update_product_detail(path: ProductPath, body: UpdateProductDetailBody):
             'status': 200,
             'data': product
         }), 200
-    except NotFoundError as e:
+    except ValueError as e:
         return jsonify({'error': {
             'message': str(e),
             'status': 404
             }}), 404
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
     
 @product_bp.patch('/<int:id>/status')
 @jwt_required()
@@ -315,11 +370,16 @@ def api_update_product_status(path: ProductPath, body: UpdateProductStatusBody):
             'status': 200,
             'data': product
         }), 200
-    except NotFoundError as e:
+    except ValueError as e:
         return jsonify({'error': {
             'message': str(e),
             'status': 404
             }}), 404
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
 
 @product_bp.delete('/<int:id>')
 @jwt_required()

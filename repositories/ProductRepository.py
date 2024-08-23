@@ -46,14 +46,13 @@ class ProductRepository:
         return new_product
 
     @staticmethod
-    def api_get_all_products(sort: None, order='asc'):
+    def api_get_all_products(sort=None, order='asc'):
         query = Product.query
         if sort:
             if order == 'desc':
                 query = query.order_by(db.desc(getattr(Product, sort)))
             else:
                 query = query.order_by(db.asc(getattr(Product, sort)))
-
         return query.all()
 
     @staticmethod
@@ -105,28 +104,35 @@ class ProductRepository:
             raise e
 
     @staticmethod
-    def update_product_category(id, category_id):
+    def update_product_category(productId, category_id):
         try:
-            product = Product.query.get(id)
+            product = Product.query.get(productId)
             if not product:
                 raise None
             product.category_id = category_id
+
             product.updated_at = db.func.now()
+
             db.session.commit()
             return product
+        
+        except DataError as e:
+            raise ValueError(f"Database error occurred: {str(e)}")
         except Exception as e:
             db.session.rollback()
             raise e
         
     @staticmethod
-    def update_product_slug(id, product_slug):
+    def update_product_slug(productId, product_slug):
         try:
-            product = Product.query.get(id)
+            product = Product.query.get(productId)
             if not product:
                 raise None
             product.product_slug = product_slug
             product.updated_at = db.func.now()
+
             db.session.commit()
+
             return product
         except Exception as e:
             db.session.rollback()
@@ -211,9 +217,13 @@ class ProductRepository:
             if not product:
                 raise None
             product.product_condition = product_condition
+
             product.updated_at = db.func.now()
+
             db.session.commit()
             return product
+        except DataError as e:
+            raise ValueError(f"Database error occurred: {str(e)}")
         except Exception as e:
             db.session.rollback()
             raise e

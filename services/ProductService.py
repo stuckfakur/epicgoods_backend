@@ -169,16 +169,26 @@ class ProductService:
         data = ProductRepository.get_product_by_id(productId)
         if not data:
             raise NotFoundError("Product not found")
-        product = ProductRepository.update_product_category(productId, category_id)
-        return product
+        try:
+            product = ProductRepository.update_product_category(productId, category_id)
+            return product.to_dict()
+        except DataError as e:
+            raise e
+        except Exception as e:
+            raise e
 
     @staticmethod
     def update_product_slug(productId, product_slug):
         data = ProductRepository.get_product_by_id(productId)
         if not data:
             raise NotFoundError("Product not found")
-        product = ProductRepository.update_product_slug(productId, product_slug)
-        return product
+        try:
+            product = ProductRepository.update_product_slug(productId, product_slug)
+            return product.to_dict()
+        except DataError as e:
+            raise e
+        except Exception as e:
+            raise e
 
     @staticmethod
     def update_product_photo(productId, product_photo):
@@ -186,7 +196,7 @@ class ProductService:
         if not data:
             raise NotFoundError("Product not found")
         product = ProductRepository.update_product_photo(productId, product_photo)
-        return product
+        return product.to_dict()
 
     @staticmethod
     def update_product_gallery(productId, product_gallery):
@@ -194,7 +204,7 @@ class ProductService:
         if not data:
             raise NotFoundError("Product not found")
         product = ProductRepository.update_product_gallery(productId, product_gallery)
-        return product
+        return product.to_dict()
 
     @staticmethod
     def update_product_name(productId, product_name):
@@ -203,7 +213,7 @@ class ProductService:
             raise NotFoundError("Product not found")
         
         product = ProductRepository.update_product_name(productId, product_name)
-        return product
+        return product.to_dict()
 
     @staticmethod
     def update_product_price(productId, product_price):
@@ -211,7 +221,7 @@ class ProductService:
         if not data:
             raise NotFoundError("Product not found")
         product = ProductRepository.update_product_price(productId, product_price)
-        return product
+        return product.to_dict()
 
     @staticmethod
     def update_product_stock(productId, product_stock):
@@ -219,23 +229,33 @@ class ProductService:
         if not data:
             raise NotFoundError("Product not found")
         product = ProductRepository.update_product_stock(productId, product_stock)
-        return product
+        return product.to_dict()
     
     @staticmethod
     def update_product_condition(productId, product_condition):
         data = ProductRepository.get_product_by_id(productId)
         if not data:
             raise NotFoundError("Product not found")
-        product = ProductRepository.update_product_condition(productId, product_condition)
-        return product
-    
+        try:
+            product = ProductRepository.update_product_condition(productId, product_condition)
+            return product.to_dict()
+        except DataError as e:
+            return e
+        except Exception as e:
+            return e
+        
     @staticmethod   
     def update_product_detail(productId, product_detail):
         data = ProductRepository.get_product_by_id(productId)
         if not data:
             raise NotFoundError("Product not found")
-        product = ProductRepository.update_product_detail(productId, product_detail)
-        return product
+        try:
+            product = ProductRepository.update_product_condition(productId, product_detail)
+            return product.to_dict()
+        except DataError as e:
+            return e
+        except Exception as e:
+            return e
 
     @staticmethod
     def update_product_status(productId, status):
@@ -243,7 +263,7 @@ class ProductService:
         if not data:
             raise NotFoundError("Product not found")
         product = ProductRepository.update_product_status(productId, status)
-        return product
+        return product.to_dict()
 
     @staticmethod
     def delete_product(productId):
