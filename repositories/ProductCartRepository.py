@@ -18,19 +18,14 @@ class ProductCartRepository:
         return new_product_cart
 
     @staticmethod
-    def get_all_product_cart(sort=None, order='asc'):
-        query = ProductCart.query
-        if sort:
-            if order == 'desc':
-                query = query.order_by(db.desc(getattr(ProductCart, sort)))
-            else:
-                query = query.order_by(db.asc(getattr(ProductCart, sort)))
-        return query.all()
+    def get_all_product_cart():
+        return ProductCart.query.all()
     
     @staticmethod
     def get_product_cart_by_id(id):
         return ProductCart.query.get(id)
 
+    @staticmethod
     def update_product_cart(
         id,
         user_id,
@@ -38,6 +33,7 @@ class ProductCartRepository:
         quantity
     ):
         return ProductCart.query.update(
+            id,
             user_id,
             product_id,
             quantity
@@ -99,3 +95,7 @@ class ProductCartRepository:
         except Exception as e:
             db.session.rollback()
             raise e
+        
+    @staticmethod
+    def get_product_cart_by_user_id(user_id: int):
+        return db.session.query(ProductCart).filter(ProductCart.user_id == user_id).all()

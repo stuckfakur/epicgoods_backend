@@ -32,9 +32,9 @@ class ProductCartService:
         return product_cart
     
     @staticmethod
-    def get_all_product_cart(sort=None, order='asc'):
-        product_cart = ProductCartRepository.get_all_product_cart(sort, order)
-        return [product_cart.to_dict() for product_cart in product_cart]
+    def get_all_product_cart():
+        product_carts = ProductCartRepository.get_all_product_cart()
+        return [product_cart.to_dict() for product_cart in product_carts]
     
     @staticmethod
     def get_product_cart_by_id(productCartId):
@@ -84,3 +84,7 @@ class ProductCartService:
         
         product_cart = ProductCartRepository.update_product_cart_quantity(productCartId, quantity)
         return product_cart
+    
+    @staticmethod
+    def get_product_carts_by_user_id(user_id):
+        return ProductCartRepository.get_product_carts_by_user_id(user_id)

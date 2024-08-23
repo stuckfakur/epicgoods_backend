@@ -48,10 +48,7 @@ def api_create_product_cart(body: BaseProductCartBody):
 @product_cart_bp.get('/all')
 @jwt_required()
 def api_get_all_product_cart():
-    sort = request.args.get('sort')
-    order = request.args.get('order', 'asc')
-    
-    product_cart = ProductCartService.get_all_product_cart(sort, order)
+    product_cart = ProductCartService.get_all_product_cart()
     return jsonify({
         'status': 200,
         'data': product_cart
