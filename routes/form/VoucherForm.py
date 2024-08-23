@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List, Literal
 
 class BaseVoucherBody(BaseModel):
     voucher_name: str

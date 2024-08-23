@@ -4,6 +4,7 @@ from flask_openapi3 import APIBlueprint, Tag
 
 from config import Config
 from routes.form.VoucherForm import *
+from utils.exception import NotFoundError
 from services.VoucherService import VoucherService
 
 JWT = Config.JWT
@@ -88,10 +89,160 @@ def api_update_voucher(path: VoucherPath, body: UpdateVoucherBody):
         return jsonify({
             'message': 'Voucher updated successfully',
             'status': 200,
-            'data': voucher.to_dict()
+            'data': voucher
+        }), 200
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
+    except ValueError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 400
+        }}), 400
+    
+@voucher_bp.patch('/<int:id>/voucher_name')
+@jwt_required()
+def api_update_voucher_name(path: VoucherPath, body: UpdateVoucherName):
+    try:
+        form = VoucherForm()
+        voucher = VoucherService.update_voucher_name(
+            path.id,
+            form.voucher_name
+        )
+        return jsonify({
+            'message': 'Voucher name updated successfully',
+            'status': 200,
+            'data': voucher
         }), 200
     except ValueError as e:
         return jsonify({'error': {
             'message': str(e),
             'status': 400
         }}), 400
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
+    
+@voucher_bp.patch('/<int:id>/voucher_code')
+@jwt_required()
+def api_update_voucher_code(path: VoucherPath, body: UpdateVoucherCode):
+    try:
+        form = VoucherForm()
+        voucher = VoucherService.update_voucher_code(
+            path.id,
+            form.voucher_code
+        )
+        return jsonify({
+            'message': 'Voucher code updated successfully',
+            'status': 200,
+            'data': voucher
+        }), 200
+    except ValueError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 400
+        }}), 400
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
+    
+@voucher_bp.patch('/<int:id>/voucher_type')
+@jwt_required()
+def api_update_voucher_type(path: VoucherPath, body: UpdateVoucherType):
+    try:
+        form = VoucherForm()
+        voucher = VoucherService.update_voucher_type(
+            path.id,
+            form.voucher_type
+        )
+        return jsonify({
+            'message': 'Voucher type updated successfully',
+            'status': 200,
+            'data': voucher
+        }), 200
+    except ValueError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 400
+        }}), 400
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
+    
+@voucher_bp.patch('/<int:id>/voucher_value')
+@jwt_required()
+def api_update_voucher_value(path: VoucherPath, body: UpdateVoucherValue):
+    try:
+        form = VoucherForm()
+        voucher = VoucherService.update_voucher_value(
+            path.id,
+            form.voucher_value
+        )
+        return jsonify({
+            'message': 'Voucher value updated successfully',
+            'status': 200,
+            'data': voucher
+        }), 200
+    except ValueError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 400
+        }}), 400
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
+    
+@voucher_bp.patch('/<int:id>/voucher_quota')
+@jwt_required()
+def api_update_voucher_quota(path: VoucherPath, body: UpdateVoucherQuota):
+    try:
+        form = VoucherForm()
+        voucher = VoucherService.update_voucher_quota(
+            path.id,
+            form.voucher_quota
+        )
+        return jsonify({
+            'message': 'Voucher quota updated successfully',
+            'status': 200,
+            'data': voucher
+        }), 200
+    except ValueError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 400
+        }}), 400
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+        }}), 404
+
+@voucher_bp.delete('/<int:id>')
+@jwt_required()
+def api_delete_voucher_by_id(path: VoucherPath):
+    try:
+        VoucherService.delete_voucher(path.id)
+        return jsonify({
+            'message': 'Voucher deleted successfully',
+            'status': 200
+            }), 200
+    except NotFoundError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 404
+            }}), 404
+    except ValueError as e:
+        return jsonify({'error': {
+            'message': str(e),
+            'status': 400
+            }}), 400

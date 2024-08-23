@@ -1,5 +1,5 @@
 from models.Voucher import Voucher, db
-
+from sqlalchemy.exc import DataError
 
 class VoucherRepository:
     @staticmethod
@@ -41,8 +41,8 @@ class VoucherRepository:
         return query.all()
 
     @staticmethod
-    def get_voucher_by_id(id):
-        return Voucher.query.get(id)
+    def get_voucher_by_id(voucherId):
+        return Voucher.query.get(voucherId)
 
     @staticmethod
     def update_voucher(
@@ -53,21 +53,110 @@ class VoucherRepository:
             voucher_value,
             voucher_quota
     ):
-        voucher = Voucher.query.get(voucherId)
         try:
             voucher = Voucher.query.get(voucherId)
             if not voucher:
                 return None
-
             voucher.voucher_name = voucher_name
             voucher.voucher_code = voucher_code
             voucher.voucher_type = voucher_type
             voucher.voucher_value = voucher_value
             voucher.voucher_quota = voucher_quota
+
             voucher.updated_at = db.func.now()
 
+            db.session.commit()
+            return voucher
+        except DataError as e:
+            raise ValueError(f"Database error occurred: {str(e)}")
+        except Exception as e:
+            db.session.rollback()
+            raise e
+    
+    @staticmethod
+    def update_voucher_name(voucherId, voucher_name):
+        try:
+            voucher = Voucher.query.get(voucherId)
+            if not voucher:
+                return None
+            
+            voucher.voucher_name = voucher_name
+            voucher.updated_at = db.func.now()
+            
             db.session.commit()
             return voucher
         except Exception as e:
             db.session.rollback()
             raise e
+    
+    @staticmethod
+    def update_voucher_code(voucherId, voucher_code):
+        try:
+            voucher = Voucher.query.get(voucherId)
+            if not voucher:
+                return None
+            
+            voucher.voucher_code = voucher_code
+            voucher.updated_at = db.func.now()
+            
+            db.session.commit()
+            return voucher
+        except Exception as e:
+            db.session.rollback()
+            raise e
+    
+    @staticmethod
+    def update_voucher_type(voucherId, voucher_type):
+        try:
+            voucher = Voucher.query.get(voucherId)
+            if not voucher:
+                return None
+            
+            voucher.voucher_type = voucher_type
+            voucher.updated_at = db.func.now()
+            
+            db.session.commit()
+            return voucher
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        
+    @staticmethod
+    def update_voucher_value(voucherId, voucher_value):
+        try:
+            voucher = Voucher.query.get(voucherId)
+            if not voucher:
+                return None
+            
+            voucher.voucher_value = voucher_value
+            voucher.updated_at = db.func.now()
+            
+            db.session.commit()
+            return voucher
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        
+    @staticmethod
+    def update_voucher_quota(voucherId, voucher_quota):
+        try:
+            voucher = Voucher.query.get(voucherId)
+            if not voucher:
+                return None
+            
+            voucher.voucher_quota = voucher_quota
+            voucher.updated_at = db.func.now()
+            
+            db.session.commit()
+            return voucher
+        except Exception as e:
+            db.session.rollback()
+            raise e
+
+    @staticmethod
+    def delete_voucher(voucherId):
+        voucher = Voucher.query.get(voucherId)
+        if voucher:
+            db.session.delete(voucher)
+            db.session.commit()
+        return voucher

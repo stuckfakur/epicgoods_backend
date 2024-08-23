@@ -20,13 +20,12 @@ class Validator:
     @staticmethod
     def voucher_type_validator(voucher_type):
         if voucher_type not in ['percentage', 'amount']:
-            raise ValueError("Voucher type is required")
+            raise ValueError("Voucher type only percentage or amount")
 
     @staticmethod
     def exist_voucher(voucher_code):
         if VoucherRepository.existing_voucher_code(voucher_code):
             raise ValueError("Voucher code already exists")
-
 
 class VoucherService:
     @staticmethod
@@ -59,8 +58,8 @@ class VoucherService:
         return [voucher.to_dict() for voucher in voucher]
 
     @staticmethod
-    def get_voucher_by_id(id):
-        voucher = VoucherRepository.get_voucher_by_id(id)
+    def get_voucher_by_id(voucherId):
+        voucher = VoucherRepository.get_voucher_by_id(voucherId)
         if voucher:
             return voucher.to_dict()
         else:
@@ -100,3 +99,77 @@ class VoucherService:
             raise ValueError(f"Database error occurred: {str(e)}")
         except Exception as e:
             raise e
+    
+    @staticmethod
+    def update_voucher_name(id, voucher_name):
+        voucher = VoucherService.get_voucher_by_id(id)
+        if not voucher:
+            raise NotFoundError("Voucher not found")
+        try:
+            voucher = VoucherRepository.update_voucher_name(id, voucher_name)
+            return voucher.to_dict()
+        except DataError as e:
+            raise ValueError(f"Database error occurred: {str(e)}")
+        except Exception as e:
+            raise e
+    
+    @staticmethod
+    def update_voucher_code(id,voucher_code):
+        voucher = VoucherService.get_voucher_by_id(id)
+        if not voucher:
+            raise NotFoundError("Voucher not found")
+        try:
+            voucher = VoucherRepository.update_voucher_code(id, voucher_code)
+            return voucher.to_dict()
+        except DataError as e:
+            raise ValueError(f"Database error occurred: {str(e)}")
+        except Exception as e:
+            raise e
+    
+    @staticmethod
+    def update_voucher_type(id, voucher_type):
+        Validator.voucher_type_validator(voucher_type)
+        voucher = VoucherService.get_voucher_by_id(id)
+        if not voucher:
+            raise NotFoundError("Voucher not found")
+        try:
+            voucher = VoucherRepository.update_voucher_type(id, voucher_type)
+            return voucher.to_dict()
+        except DataError as e:
+            raise ValueError(f"Database error occurred: {str(e)}")
+        except Exception as e:
+            raise e
+        
+    @staticmethod
+    def update_voucher_value(id, voucher_value):
+        voucher = VoucherService.get_voucher_by_id(id)
+        if not voucher:
+            raise NotFoundError("Voucher not found")
+        try:
+            voucher = VoucherRepository.update_voucher_value(id, voucher_value)
+            return voucher.to_dict()
+        except DataError as e:
+            raise ValueError(f"Database error occurred: {str(e)}")
+        except Exception as e:
+            raise e
+        
+    @staticmethod
+    def update_voucher_quota(id, voucher_quota):
+        voucher = VoucherService.get_voucher_by_id(id)
+        if not voucher:
+            raise NotFoundError("Voucher not found")
+        try:
+            voucher = VoucherRepository.update_voucher_quota(id, voucher_quota)
+            return voucher.to_dict()
+        except DataError as e:
+            raise ValueError(f"Database error occurred: {str(e)}")
+        except Exception as e:
+            raise e
+
+    @staticmethod
+    def delete_voucher(productId):
+        data = VoucherRepository.get_voucher_by_id(productId)
+        if not data:
+            raise NotFoundError("Voucher not found")
+        voucher = VoucherRepository.delete_voucher(productId)
+        return voucher.to_dict()
