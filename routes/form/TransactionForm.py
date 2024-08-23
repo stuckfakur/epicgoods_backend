@@ -11,5 +11,11 @@ class MakeManyTransactionBody(BaseModel):
     ListTransaction: List[CreateTransactionBody]
 
 
+class UpdateTransactionBody(BaseModel):
+    product_id: int
+    quantity: int
+    voucher_id: int
+    paid_status: str
+    
 class TransactionPath(BaseModel):
     id: int
