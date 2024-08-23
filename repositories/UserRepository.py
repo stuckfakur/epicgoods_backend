@@ -1,4 +1,5 @@
 from models.User import User, db
+from models.ProductCart import ProductCart
 from sqlalchemy.exc import DataError
 import random
 
@@ -148,3 +149,7 @@ class UserRepository:
             db.session.delete(user)
             db.session.commit()
         return user
+    
+    @staticmethod
+    def get_user_by_id(id):
+        return User.query.get(id)

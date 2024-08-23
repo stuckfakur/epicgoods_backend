@@ -2,6 +2,8 @@ from repositories.UserRepository import UserRepository
 from utils.exception import NotFoundError
 from flask_jwt_extended import get_jwt_identity
 from sqlalchemy.exc import DataError
+from models.ProductCart import ProductCart
+from repositories.ProductCartRepository import ProductCartRepository
 import re
 
 class Validator:
@@ -142,3 +144,17 @@ class UserService:
             raise NotFoundError("User not found")
         user = UserRepository.delete_users(id)
         return user
+
+    @staticmethod
+    def get_user_cart():
+        user_id = get_jwt_identity()['id']  # Mendapatkan ID pengguna dari token JWT
+        
+        # Mengambil data pengguna dan cart produk berdasarkan ID pengguna
+        user = UserRepository.get_user_by_id(user_id)
+        if user is None:
+            raise NotFoundError('User not found')
+        
+        cart_items = ProductCartRepository.get_product_cart_by_user_id(user_id)
+        
+        # Mengembalikan data cart produk
+        return [item.to_dict() for item in cart_items]  # Sesuaikan dengan metode model Anda

@@ -1,5 +1,3 @@
-import os
-
 from flasgger import swag_from
 from flask import request, jsonify
 from flask_jwt_extended import jwt_required
@@ -32,7 +30,6 @@ class UserForm:
         self.is_seller = data.get('is_seller')
 @user_bp.post("/create")
 @jwt_required()
-@swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/CreateUser.yml'))
 def api_create_users(body: CreateUserBody):
     try:
         user_form = UserForm()
@@ -64,7 +61,6 @@ def api_get_all_users():
 
 @user_bp.get("/<int:id>")
 @jwt_required()
-@swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/GetUserById.yml'))
 def api_get_users_by_id(path: UserPath):
     users = UserService.get_users_by_id(path.id)
     return jsonify({
@@ -74,7 +70,6 @@ def api_get_users_by_id(path: UserPath):
 
 @user_bp.get("/data")
 @jwt_required()
-@swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/GetMyDataUser.yml'))
 def api_get_mydata_user():
     users = UserService.get_mydata_user()
     return jsonify({
@@ -84,7 +79,6 @@ def api_get_mydata_user():
 
 @user_bp.put("/<int:id>")
 @jwt_required()
-@swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/UpdateUser.yml'))
 def api_update_users(path: UserPath, body: UpdateUserBody):
     try:
         form = UserForm()
@@ -115,7 +109,6 @@ def api_update_users(path: UserPath, body: UpdateUserBody):
 
 @user_bp.patch('/<int:id>/status')
 @jwt_required()
-@swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/UpdateUserStatus.yml'))
 def api_update_user_status(path: UserPath, body: UpdateUserStatusBody):
     try:
         form = UserForm()
@@ -162,7 +155,6 @@ def api_update_user_is_seller(path: UserPath, body: UpdateUserIsSellerBody):
 
 @user_bp.patch("/<int:id>/password")
 @jwt_required()
-@swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/UpdateUserPassword.yml'))
 def api_update_user_password(path: UserPath, body: UpdateUserPasswordBody):
     try:
         form = UserForm()
@@ -186,7 +178,6 @@ def api_update_user_password(path: UserPath, body: UpdateUserPasswordBody):
 
 @user_bp.delete("/<int:id>")
 @jwt_required()
-@swag_from(os.path.join(os.path.dirname(__file__), 'docs/User/DeleteUser.yml'))
 def api_delete_users(path: UserPath):
     try:
         UserService.delete_users(path.id)
@@ -201,6 +192,11 @@ def api_delete_users(path: UserPath):
         }}), 404
 
 # TODO make GET id user for get all cart
-@user_bp.get("/<int:id>/cart")
+@user_bp.get("/list_cart")
 @jwt_required()
-def api_get_user_cart(path: UserPath):
+def api_get_user_cart():
+    users = UserService.get_user_cart()
+    return jsonify({
+        'status': 200,
+        'data': users.to_dict()
+    }) if users else ('', 404)
