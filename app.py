@@ -83,8 +83,9 @@ connection_check()
 # )
 
 prod = "https://epicgoods-frontend-d7pr6d64b-stafakurs-projects.vercel.app/"
+production = "https://epicgoods-frontend-kappa.vercel.app/"
 
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000", "*", prod, "https://epicgoods-frontend-d7pr6d64b-stafakurs-projects.vercel.app"]}},
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000", "*", prod,production, "https://epicgoods-frontend-d7pr6d64b-stafakurs-projects.vercel.app"]}},
      supports_credentials=True)
 
 
