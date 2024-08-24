@@ -82,7 +82,9 @@ connection_check()
 #     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
 # )
 
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000", "*"]}},
+prod = "https://epicgoods-frontend-d7pr6d64b-stafakurs-projects.vercel.app/"
+
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000", "*", prod]}},
      supports_credentials=True)
 
 
