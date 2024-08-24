@@ -53,7 +53,6 @@ def api_create_category(body: CreateBody):
 
 
 @category_bp.get("/all")
-@jwt_required()
 def api_get_all_category():
     sort = request.args.get('sort')
     order = request.args.get('order', 'asc')

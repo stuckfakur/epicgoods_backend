@@ -82,7 +82,7 @@ connection_check()
 #     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
 # )
 
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000"]}},
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000", "*"]}},
      supports_credentials=True)
 
 
