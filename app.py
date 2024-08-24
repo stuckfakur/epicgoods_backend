@@ -70,23 +70,22 @@ app.register_api(category_bp)
 
 swagger = Swagger(app)
 connection_check()
-
-# CORS(
-#     app,
-#     supports_credentials=True,
-#     origins=[
-
-#         'http://localhost:3000', 'http://127.0.0.1:3000',
-#     ],
-#     allow_headers=['Content-Type', 'Authorization'],
-#     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
-# )
-
-prod = "https://epicgoods-frontend-d7pr6d64b-stafakurs-projects.vercel.app/"
 production = "https://epicgoods-frontend-kappa.vercel.app/"
 
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000", "*", prod,production, "https://epicgoods-frontend-d7pr6d64b-stafakurs-projects.vercel.app"]}},
-     supports_credentials=True)
+CORS(
+    app,
+    supports_credentials=True,
+    origins=[
+
+        'http://localhost:3000', 'http://127.0.0.1:3000', production
+    ],
+    allow_headers=['Content-Type', 'Authorization'],
+    methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
+)
+
+#
+# CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000", "*", production]}},
+#      supports_credentials=True)
 
 
 @app.get("/", summary="test", tags=[test_tag])
